@@ -1,0 +1,156 @@
+import { Link, useNavigate } from 'react-router-dom';
+import { useNavbar } from '../context/NavbarContext';
+import { useAuth } from '../context/AuthContext';
+import { User, LogOut, FileText, ChevronDown, Edit, Save, Heart } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+
+const Navbar = () => {
+    const { title, actions, dropdownItems } = useNavbar();
+    const { user, logout } = useAuth();
+    const navigate = useNavigate();
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
+
+    const handleLogout = () => {
+        logout();
+        navigate('/');
+    };
+
+    const getInitials = (name) => {
+        if (!name) return 'U';
+        return name.charAt(0).toUpperCase();
+    };
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    return (
+        <nav className="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-50">
+            <div className="container mx-auto px-6 py-2 flex justify-between items-center relative">
+                {/* Logo / Home Link */}
+                <div className="flex items-center gap-8">
+                    <Link to="/" className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 hover:opacity-80 transition-opacity z-10">
+                        ResumeAI
+                    </Link>
+
+                    {/* Main Nav Links - HIDDEN/REMOVED as per request */}
+                    {/* <div className="hidden md:flex space-x-6">
+                        <Link to="/templates" className="flex items-center gap-2 hover:text-purple-400 transition-colors font-medium">
+                            <FileText size={18} /> Templates
+                        </Link>
+                    </div> */}
+                </div>
+
+                {/* Centered Title (Dynamic) - Hide if it is 'ResumeAI' to avoid duplication */}
+                {title !== 'ResumeAI' && (
+                    <div className="absolute left-1/2 transform -translate-x-1/2 font-semibold text-lg tracking-wide hidden md:block">
+                        {title}
+                    </div>
+                )}
+
+                {/* Right Side: Profile / Actions */}
+                <div className="flex items-center gap-4 z-10">
+                    {/* Existing Actions */}
+                    {actions && (
+                        <div className="flex items-center gap-4">
+                            {actions}
+                        </div>
+                    )}
+
+                    {/* Profile Section */}
+                    <div className="relative" ref={dropdownRef}>
+                        <button
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                            className="flex items-center gap-2 focus:outline-none hover:bg-slate-800 p-2 rounded-lg transition-colors"
+                        >
+                            {user?.avatar ? (
+                                <img src={user.avatar} alt="Profile" className="w-8 h-8 rounded-full object-cover border border-slate-600" />
+                            ) : (
+                                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-sm font-bold shadow-md ring-1 ring-slate-700">
+                                    {getInitials(user?.name)}
+                                </div>
+                            )}
+                            <span className="text-sm font-medium hidden sm:block max-w-[100px] truncate">
+                                {user?.name || 'Guest'}
+                            </span>
+                            <ChevronDown size={14} className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        {/* Dropdown Menu */}
+                        {isDropdownOpen && (
+                            <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-2xl py-2 text-slate-800 transform origin-top-right transition-all duration-200 border border-slate-200">
+                                <div className="px-4 py-2 border-b border-slate-100 mb-2">
+                                    <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Account</p>
+                                    <p className="text-sm font-medium truncate">{user?.email || 'Guest User'}</p>
+                                </div>
+
+                                {/* Menu Items */}
+                                <div className="flex flex-col">
+                                    <Link
+                                        to="/profile"
+                                        className="px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2 text-slate-700 transition-colors"
+                                        onClick={() => setIsDropdownOpen(false)}
+                                    >
+                                        <Edit size={16} /> Profile Edit
+                                    </Link>
+
+                                    <Link
+                                        to="/saved-resumes"
+                                        className="px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2 text-slate-700 transition-colors"
+                                        onClick={() => setIsDropdownOpen(false)}
+                                    >
+                                        <Save size={16} /> Save Resume
+                                    </Link>
+
+                                    <Link
+                                        to="/wishlist"
+                                        className="px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2 text-slate-700 transition-colors"
+                                        onClick={() => setIsDropdownOpen(false)}
+                                    >
+                                        <Heart size={16} /> Templates Wishlist
+                                    </Link>
+
+                                    {/* Dynamic Items from Context (if any remain pertinent) */}
+                                    {dropdownItems.map((item, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => {
+                                                item.onClick();
+                                                setIsDropdownOpen(false);
+                                            }}
+                                            className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2 text-slate-700 hover:text-blue-600 transition-colors"
+                                        >
+                                            {item.icon}
+                                            {item.label}
+                                        </button>
+                                    ))}
+
+                                    <div className="border-t border-slate-100 mt-2 pt-2">
+                                        <button
+                                            onClick={handleLogout}
+                                            className="w-full text-left px-4 py-2 text-sm hover:bg-red-50 text-red-600 flex items-center gap-2 transition-colors"
+                                        >
+                                            <LogOut size={16} /> Logout
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </nav>
+    );
+};
+
+export default Navbar;
