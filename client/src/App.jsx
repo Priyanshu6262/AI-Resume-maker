@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import TemplateSelection from './pages/TemplateSelection';
 import Editor from './pages/Editor';
+import SavedResumes from './pages/SavedResumes';
+import Wishlist from './pages/Wishlist';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import { Toaster } from 'react-hot-toast';
@@ -22,6 +24,8 @@ function App() {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/templates" element={<TemplateSelection />} />
                 <Route path="/editor" element={<Editor />} />
+                <Route path="/saved-resumes" element={<SavedResumes />} />
+                <Route path="/wishlist" element={<Wishlist />} />
               </Routes>
             </main>
             <Footer />
