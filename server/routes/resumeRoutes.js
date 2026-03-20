@@ -23,10 +23,13 @@ const protect = (req, res, next) => {
 
 // Create or Update Resume
 router.post('/', protect, async (req, res) => {
-    const { templateId, personalInfo, education, experience, skills, projects } = req.body;
+    const { _id, templateId, personalInfo, education, experience, skills, projects } = req.body;
 
     try {
-        let resume = await Resume.findOne({ userId: req.user.id });
+        let resume = null;
+        if (_id) {
+            resume = await Resume.findOne({ _id, userId: req.user.id });
+        }
 
         if (resume) {
             // Update existing
@@ -56,12 +59,36 @@ router.post('/', protect, async (req, res) => {
     }
 });
 
-// Get User Resume
+// Get ALL User Resumes
 router.get('/', protect, async (req, res) => {
     try {
-        const resume = await Resume.findOne({ userId: req.user.id });
+        const resumes = await Resume.find({ userId: req.user.id }).sort({ updatedAt: -1 });
+        res.json(resumes);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+});
+
+// Get specific Resume
+router.get('/:id', protect, async (req, res) => {
+    try {
+        const resume = await Resume.findOne({ _id: req.params.id, userId: req.user.id });
         if (resume) {
             res.json(resume);
+        } else {
+            res.status(404).json({ message: 'Resume not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+});
+
+// Delete Resume
+router.delete('/:id', protect, async (req, res) => {
+    try {
+        const resume = await Resume.findOneAndDelete({ _id: req.params.id, userId: req.user.id });
+        if (resume) {
+            res.json({ message: 'Resume deleted successfully' });
         } else {
             res.status(404).json({ message: 'Resume not found' });
         }
