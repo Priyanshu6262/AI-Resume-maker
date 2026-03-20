@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Save, Download, FileText } from 'lucide-react';
@@ -11,9 +11,11 @@ import ResumeForm from '../components/ResumeForm';
 import { useNavbar } from '../context/NavbarContext';
 
 const Editor = () => {
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const resumeId = searchParams.get('id');
     const templateId = searchParams.get('template') || 'simple';
     const previewRef = useRef();
+    const navigate = useNavigate();
     const { setTitle, setActions } = useNavbar();
 
     const [resumeData, setResumeData] = useState({
@@ -23,6 +25,39 @@ const Editor = () => {
         skills: [],
         projects: [],
     });
+
+    // Fetch existing resume data if editing
+    useEffect(() => {
+        if (resumeId) {
+            const fetchResume = async () => {
+                try {
+                    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+                    if (!userInfo || !userInfo.token) return;
+
+                    const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
+                    const { data } = await axios.get(`http://localhost:5000/api/resumes/${resumeId}`, config);
+                    
+                    if (data) {
+                        setResumeData({
+                            personalInfo: data.personalInfo || {},
+                            education: data.education || [],
+                            experience: data.experience || [],
+                            skills: data.skills || [],
+                            projects: data.projects || []
+                        });
+                        
+                        // If template in DB is different from URL, update URL silently
+                        if (data.templateId && data.templateId !== templateId) {
+                            setSearchParams({ template: data.templateId, id: resumeId }, { replace: true });
+                        }
+                    }
+                } catch (error) {
+                    toast.error('Failed to load resume data');
+                }
+            };
+            fetchResume();
+        }
+    }, [resumeId]);
 
     const handleDownload = async () => {
         const element = previewRef.current;
@@ -148,12 +183,21 @@ const Editor = () => {
                 },
             };
 
-            await axios.post('http://localhost:5000/api/resumes', {
+            const payload = {
                 templateId,
                 ...resumeData
-            }, config);
+            };
+            if (resumeId) {
+                payload._id = resumeId;
+            }
+
+            const { data } = await axios.post('http://localhost:5000/api/resumes', payload, config);
 
             toast.success('Resume saved successfully');
+
+            if (!resumeId && data._id) {
+                setSearchParams({ template: templateId, id: data._id }, { replace: true });
+            }
         } catch (error) {
             toast.error('Failed to save resume');
         }
