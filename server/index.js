@@ -18,6 +18,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/resumes', require('./routes/resumeRoutes'));
+app.use('/api/enhance', require('./routes/enhanceRoutes'));
 
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/resumemaker')
     .then(() => console.log('MongoDB Connected'))

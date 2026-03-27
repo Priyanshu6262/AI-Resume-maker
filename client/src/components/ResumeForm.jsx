@@ -1,6 +1,28 @@
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Wand2, Loader2 } from 'lucide-react';
+import { useState } from 'react';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const ResumeForm = ({ data, updateData }) => {
+    const [enhancingField, setEnhancingField] = useState(null);
+
+    const enhanceText = async (text, type, trackingId, callback) => {
+        if (!text || text.trim() === '') {
+            toast.error('Please enter some text first');
+            return;
+        }
+
+        try {
+            setEnhancingField(trackingId);
+            const response = await axios.post('http://localhost:5000/api/enhance', { text, type });
+            callback(response.data.enhancedText);
+            toast.success('Text enhanced with AI!');
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to enhance text');
+        } finally {
+            setEnhancingField(null);
+        }
+    };
     const handleChange = (section, field, value) => {
         updateData((prev) => ({
             ...prev,
@@ -118,7 +140,18 @@ const ResumeForm = ({ data, updateData }) => {
                         />
                     </div>
                     <div>
-                        <label className={labelClasses}>Professional Summary</label>
+                        <div className="flex justify-between items-center mb-1">
+                            <label className="text-sm font-medium text-slate-300">Professional Summary</label>
+                            <button
+                                type="button"
+                                onClick={() => enhanceText(data.personalInfo.summary, 'summary', 'summary', (newText) => handleChange('personalInfo', 'summary', newText))}
+                                disabled={enhancingField === 'summary'}
+                                className="text-xs flex items-center gap-1 text-purple-400 hover:text-purple-300 font-medium transition-colors disabled:opacity-50"
+                            >
+                                {enhancingField === 'summary' ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
+                                Enhance with AI
+                            </button>
+                        </div>
                         <textarea
                             placeholder="Briefly describe your professional background..."
                             value={data.personalInfo.summary}
@@ -224,12 +257,26 @@ const ResumeForm = ({ data, updateData }) => {
                                     onChange={(e) => handleArrayChange('experience', index, 'duration', e.target.value)}
                                     className={inputClasses}
                                 />
-                                <textarea
-                                    placeholder="Description"
-                                    value={exp.description}
-                                    onChange={(e) => handleArrayChange('experience', index, 'description', e.target.value)}
-                                    className={`${inputClasses} h-20 resize-none`}
-                                />
+                                <div className="relative">
+                                    <div className="absolute top-2 right-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => enhanceText(exp.description, 'experience', `experience-${index}`, (newText) => handleArrayChange('experience', index, 'description', newText))}
+                                            disabled={enhancingField === `experience-${index}`}
+                                            className="text-xs bg-slate-800/80 p-1.5 rounded-md flex items-center gap-1 text-purple-400 hover:text-purple-300 hover:bg-slate-700 font-medium transition-all disabled:opacity-50 border border-slate-600 shadow-md"
+                                            title="Enhance with AI"
+                                        >
+                                            {enhancingField === `experience-${index}` ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
+                                            <span className="hidden sm:inline">Enhance</span>
+                                        </button>
+                                    </div>
+                                    <textarea
+                                        placeholder="Description"
+                                        value={exp.description}
+                                        onChange={(e) => handleArrayChange('experience', index, 'description', e.target.value)}
+                                        className={`${inputClasses} h-28 resize-none`}
+                                    />
+                                </div>
                             </div>
                         </div>
                     ))}
@@ -282,12 +329,26 @@ const ResumeForm = ({ data, updateData }) => {
                                     onChange={(e) => handleArrayChange('projects', index, 'sourceLink', e.target.value)}
                                     className={inputClasses}
                                 />
-                                <textarea
-                                    placeholder="Description"
-                                    value={proj.description}
-                                    onChange={(e) => handleArrayChange('projects', index, 'description', e.target.value)}
-                                    className={`${inputClasses} h-20 resize-none`}
-                                />
+                                <div className="relative">
+                                    <div className="absolute top-2 right-2">
+                                        <button
+                                            type="button"
+                                            onClick={() => enhanceText(proj.description, 'project', `project-${index}`, (newText) => handleArrayChange('projects', index, 'description', newText))}
+                                            disabled={enhancingField === `project-${index}`}
+                                            className="text-xs bg-slate-800/80 p-1.5 rounded-md flex items-center gap-1 text-purple-400 hover:text-purple-300 hover:bg-slate-700 font-medium transition-all disabled:opacity-50 border border-slate-600 shadow-md"
+                                            title="Enhance with AI"
+                                        >
+                                            {enhancingField === `project-${index}` ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
+                                            <span className="hidden sm:inline">Enhance</span>
+                                        </button>
+                                    </div>
+                                    <textarea
+                                        placeholder="Description"
+                                        value={proj.description}
+                                        onChange={(e) => handleArrayChange('projects', index, 'description', e.target.value)}
+                                        className={`${inputClasses} h-28 resize-none`}
+                                    />
+                                </div>
                             </div>
                         </div>
                     ))}
