@@ -49,14 +49,42 @@ const Navbar = () => {
                             <FileText size={18} /> Templates
                         </Link>
                     </div> */}
+
+                    {/* Global Toolbar Container next to Logo */}
+                    <div id="global-quill-toolbar" className={title === 'Resume Editor' ? "ql-toolbar ql-snow flex items-center gap-1 bg-slate-800/80 rounded-lg px-2 py-1 ml-4" : "hidden"}>
+                        <select className="ql-font" defaultValue="sans-serif">
+                            <option value="sans-serif"></option>
+                            <option value="serif"></option>
+                            <option value="monospace"></option>
+                        </select>
+                        <select className="ql-size" defaultValue="14px">
+                            <option value="10px"></option>
+                            <option value="12px"></option>
+                            <option value="14px"></option>
+                            <option value="16px"></option>
+                            <option value="18px"></option>
+                            <option value="20px"></option>
+                            <option value="24px"></option>
+                            <option value="30px"></option>
+                        </select>
+                        <div className="w-px h-5 bg-slate-600 mx-1"></div>
+                        <select className="ql-color"></select>
+                        <div className="w-px h-5 bg-slate-600 mx-1"></div>
+                        <button className="ql-bold"></button>
+                        <button className="ql-italic"></button>
+                        <button className="ql-underline"></button>
+                    </div>
                 </div>
 
-                {/* Centered Title (Dynamic) - Hide if it is 'ResumeAI' to avoid duplication */}
-                {title !== 'ResumeAI' && (
-                    <div className="absolute left-1/2 transform -translate-x-1/2 font-semibold text-lg tracking-wide hidden md:block">
-                        {title}
-                    </div>
-                )}
+                {/* Centered Title */}
+                <div className="absolute left-1/2 transform -translate-x-1/2 hidden md:block">
+                    {/* Centered Title (Dynamic) - Hide if it is 'ResumeAI' or 'Resume Editor' to avoid duplication/collision */}
+                    {title !== 'ResumeAI' && title !== 'Resume Editor' && (
+                        <div className="font-semibold text-lg tracking-wide text-center">
+                            {title}
+                        </div>
+                    )}
+                </div>
 
                 {/* Right Side: Profile / Actions */}
                 <div className="flex items-center gap-4 z-10">

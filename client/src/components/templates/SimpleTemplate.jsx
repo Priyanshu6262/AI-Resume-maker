@@ -26,7 +26,7 @@ const SimpleTemplate = ({ data }) => {
                 <div className="flex-grow h-px bg-slate-300"></div>
             </div>
         ),
-        Summary: () => <p className="text-justify leading-relaxed text-slate-700 mb-4">{personalInfo.summary}</p>,
+        Summary: () => <div className="leading-relaxed text-slate-700 mb-4 content-html" dangerouslySetInnerHTML={{ __html: personalInfo.summary }} />,
         ExperienceItem: ({ exp }) => (
             <div className="mb-6 last:mb-2">
                 <div className="flex justify-between items-baseline mb-1">
@@ -34,7 +34,7 @@ const SimpleTemplate = ({ data }) => {
                     <span className="text-sm font-semibold text-slate-500 whitespace-nowrap ml-4">{exp.duration}</span>
                 </div>
                 <div className="text-lg italic text-slate-600 mb-2 border-b border-dotted border-slate-300 inline-block pb-0.5">{exp.company}</div>
-                <p className="text-slate-700 leading-relaxed whitespace-pre-line text-sm mt-2">{exp.description}</p>
+                <div className="text-slate-700 leading-relaxed text-sm mt-2 content-html" dangerouslySetInnerHTML={{ __html: exp.description }} />
             </div>
         ),
         ProjectItem: ({ proj }) => (
@@ -53,7 +53,7 @@ const SimpleTemplate = ({ data }) => {
                         </a>
                     )}
                 </div>
-                <p className="text-slate-700 leading-relaxed whitespace-pre-line text-sm">{proj.description}</p>
+                <div className="text-slate-700 leading-relaxed text-sm content-html" dangerouslySetInnerHTML={{ __html: proj.description }} />
             </div>
         ),
         EducationItem: ({ edu }) => (

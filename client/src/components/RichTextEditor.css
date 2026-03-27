@@ -1,0 +1,102 @@
+/* Customized Quill Editor styles to match the dark theme */
+
+/* Headless container (just the input area) */
+.quill-custom-headless .ql-container.ql-snow {
+    background-color: transparent !important;
+    border: none !important; /* we handle border on the wrapper div in React */
+    color: #f8fafc; /* slate-50 */
+    min-height: 120px;
+    font-size: 14px;
+}
+
+.quill-custom-headless .ql-editor {
+    min-height: 120px;
+    padding: 10px;
+}
+
+.quill-custom-headless .ql-editor.ql-blank::before {
+    color: #94a3b8; /* slate-400 placeholder */
+    font-style: normal;
+    left: 10px;
+    right: 10px;
+}
+
+/* Global Navbar Toolbar Styles */
+#global-quill-toolbar.ql-toolbar.ql-snow {
+    border: 1px solid #334155 !important;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+}
+
+#global-quill-toolbar .ql-formats {
+    display: flex;
+    align-items: center;
+    margin-right: 0 !important;
+}
+
+#global-quill-toolbar .ql-picker {
+    height: 24px;
+}
+
+#global-quill-toolbar .ql-picker-label {
+    padding-top: 0;
+    padding-bottom: 0;
+    display: flex;
+    align-items: center;
+}
+
+#global-quill-toolbar .ql-stroke {
+    stroke: #cbd5e1 !important; /* slate-300 */
+}
+
+#global-quill-toolbar .ql-fill, 
+#global-quill-toolbar .ql-stroke.ql-fill {
+    fill: #cbd5e1 !important; /* slate-300 */
+}
+
+#global-quill-toolbar .ql-picker-label {
+    color: #cbd5e1 !important;
+    border: none !important;
+}
+
+#global-quill-toolbar .ql-picker-options {
+    background-color: #1e293b !important;
+    border-color: #475569 !important;
+    color: #f8fafc !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    border-radius: 6px;
+    padding: 4px;
+    margin-top: 4px;
+}
+
+#global-quill-toolbar .ql-picker-item {
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+#global-quill-toolbar .ql-picker-item:hover {
+    background-color: #334155;
+}
+
+#global-quill-toolbar .ql-picker-item:hover,
+#global-quill-toolbar .ql-picker-item.ql-selected {
+    color: #a855f7 !important;
+}
+
+#global-quill-toolbar button:hover .ql-stroke,
+#global-quill-toolbar button.ql-active .ql-stroke,
+#global-quill-toolbar .ql-picker-label:hover .ql-stroke,
+#global-quill-toolbar .ql-picker-label.ql-active .ql-stroke {
+    stroke: #a855f7 !important; /* purple-500 */
+}
+
+#global-quill-toolbar button:hover .ql-fill,
+#global-quill-toolbar button.ql-active .ql-fill {
+    fill: #a855f7 !important;
+}
+
+#global-quill-toolbar .ql-picker-label:hover,
+#global-quill-toolbar .ql-picker-label.ql-active {
+    color: #a855f7 !important;
+}

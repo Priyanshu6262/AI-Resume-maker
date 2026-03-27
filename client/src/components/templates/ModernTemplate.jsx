@@ -49,7 +49,7 @@ const ModernTemplate = ({ data }) => {
                 {personalInfo.summary && (
                     <div className="mb-8">
                         <h2 className="text-2xl font-bold text-slate-800 border-b-2 border-slate-200 mb-4">Profile</h2>
-                        <p className="text-gray-600">{personalInfo.summary}</p>
+                        <div className="text-gray-600 content-html" dangerouslySetInnerHTML={{ __html: personalInfo.summary }} />
                     </div>
                 )}
 
@@ -63,7 +63,7 @@ const ModernTemplate = ({ data }) => {
                                     <span>{exp.company}</span>
                                     <span>{exp.duration}</span>
                                 </div>
-                                <p className="text-gray-600 text-sm">{exp.description}</p>
+                                <div className="text-gray-600 text-sm content-html" dangerouslySetInnerHTML={{ __html: exp.description }} />
                             </div>
                         ))}
                     </div>
@@ -88,7 +88,7 @@ const ModernTemplate = ({ data }) => {
                                         </a>
                                     )}
                                 </div>
-                                <p className="text-gray-600 text-sm">{proj.description}</p>
+                                <div className="text-gray-600 text-sm content-html" dangerouslySetInnerHTML={{ __html: proj.description }} />
                             </div>
                         ))}
                     </div>

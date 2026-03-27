@@ -56,3 +56,25 @@
 ::-webkit-scrollbar-thumb {
     @apply bg-slate-700 rounded-full hover:bg-slate-600 transition-colors;
 }
+
+/* Rich Text HTML Rendering inside Templates */
+.content-html {
+    word-break: normal;
+    overflow-wrap: break-word;
+}
+.content-html p {
+    margin-bottom: 0.5em;
+    min-height: 1em;
+}
+.content-html p:last-child {
+    margin-bottom: 0;
+}
+.content-html strong {
+    font-weight: bold;
+}
+.content-html em {
+    font-style: italic;
+}
+.content-html u {
+    text-decoration: underline;
+}

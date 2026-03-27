@@ -2,6 +2,7 @@ import { Plus, Trash2, Wand2, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import RichTextEditor from './RichTextEditor';
 
 const ResumeForm = ({ data, updateData }) => {
     const [enhancingField, setEnhancingField] = useState(null);
@@ -152,11 +153,10 @@ const ResumeForm = ({ data, updateData }) => {
                                 Enhance with AI
                             </button>
                         </div>
-                        <textarea
+                        <RichTextEditor
                             placeholder="Briefly describe your professional background..."
                             value={data.personalInfo.summary}
-                            onChange={(e) => handleChange('personalInfo', 'summary', e.target.value)}
-                            className={`${inputClasses} h-24 resize-none`}
+                            onChange={(val) => handleChange('personalInfo', 'summary', val)}
                         />
                     </div>
                 </div>
@@ -257,24 +257,24 @@ const ResumeForm = ({ data, updateData }) => {
                                     onChange={(e) => handleArrayChange('experience', index, 'duration', e.target.value)}
                                     className={inputClasses}
                                 />
-                                <div className="relative">
-                                    <div className="absolute top-2 right-2">
+                                <div className="space-y-1">
+                                    <div className="flex justify-between items-center">
+                                        <label className="text-sm font-medium text-slate-300">Description</label>
                                         <button
                                             type="button"
                                             onClick={() => enhanceText(exp.description, 'experience', `experience-${index}`, (newText) => handleArrayChange('experience', index, 'description', newText))}
                                             disabled={enhancingField === `experience-${index}`}
-                                            className="text-xs bg-slate-800/80 p-1.5 rounded-md flex items-center gap-1 text-purple-400 hover:text-purple-300 hover:bg-slate-700 font-medium transition-all disabled:opacity-50 border border-slate-600 shadow-md"
+                                            className="text-xs flex items-center gap-1 text-purple-400 hover:text-purple-300 font-medium transition-colors disabled:opacity-50 border border-slate-700 bg-slate-800 px-2 py-1 rounded-md"
                                             title="Enhance with AI"
                                         >
                                             {enhancingField === `experience-${index}` ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
                                             <span className="hidden sm:inline">Enhance</span>
                                         </button>
                                     </div>
-                                    <textarea
+                                    <RichTextEditor
                                         placeholder="Description"
                                         value={exp.description}
-                                        onChange={(e) => handleArrayChange('experience', index, 'description', e.target.value)}
-                                        className={`${inputClasses} h-28 resize-none`}
+                                        onChange={(val) => handleArrayChange('experience', index, 'description', val)}
                                     />
                                 </div>
                             </div>
@@ -329,24 +329,24 @@ const ResumeForm = ({ data, updateData }) => {
                                     onChange={(e) => handleArrayChange('projects', index, 'sourceLink', e.target.value)}
                                     className={inputClasses}
                                 />
-                                <div className="relative">
-                                    <div className="absolute top-2 right-2">
+                                <div className="space-y-1">
+                                    <div className="flex justify-between items-center">
+                                        <label className="text-sm font-medium text-slate-300">Description</label>
                                         <button
                                             type="button"
                                             onClick={() => enhanceText(proj.description, 'project', `project-${index}`, (newText) => handleArrayChange('projects', index, 'description', newText))}
                                             disabled={enhancingField === `project-${index}`}
-                                            className="text-xs bg-slate-800/80 p-1.5 rounded-md flex items-center gap-1 text-purple-400 hover:text-purple-300 hover:bg-slate-700 font-medium transition-all disabled:opacity-50 border border-slate-600 shadow-md"
+                                            className="text-xs flex items-center gap-1 text-purple-400 hover:text-purple-300 font-medium transition-colors disabled:opacity-50 border border-slate-700 bg-slate-800 px-2 py-1 rounded-md"
                                             title="Enhance with AI"
                                         >
                                             {enhancingField === `project-${index}` ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
                                             <span className="hidden sm:inline">Enhance</span>
                                         </button>
                                     </div>
-                                    <textarea
+                                    <RichTextEditor
                                         placeholder="Description"
                                         value={proj.description}
-                                        onChange={(e) => handleArrayChange('projects', index, 'description', e.target.value)}
-                                        className={`${inputClasses} h-28 resize-none`}
+                                        onChange={(val) => handleArrayChange('projects', index, 'description', val)}
                                     />
                                 </div>
                             </div>
