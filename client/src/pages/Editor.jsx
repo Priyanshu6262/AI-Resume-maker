@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { Save, Download, FileText } from 'lucide-react';
+import { Save, Download, FileText, Upload } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -15,6 +15,7 @@ const Editor = () => {
     const resumeId = searchParams.get('id');
     const templateId = searchParams.get('template') || 'simple';
     const previewRef = useRef();
+    const fileInputRef = useRef();
     const navigate = useNavigate();
     const { setTitle, setActions } = useNavbar();
 
@@ -203,11 +204,67 @@ const Editor = () => {
         }
     };
 
+    const handleFileUpload = async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        if (file.size > 2 * 1024 * 1024) {
+            toast.error('File size exceeds 2MB limit.');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                const base64Data = e.target.result.split(',')[1];
+                toast.loading("Analyzing and enhancing resume...", { id: 'upload-toast' });
+                
+                const { data } = await axios.post('http://localhost:5000/api/enhance/upload', {
+                    fileData: base64Data,
+                    mimeType: file.type
+                });
+
+                setResumeData(prev => ({
+                    personalInfo: { ...prev.personalInfo, ...(data.personalInfo || {}) },
+                    education: data.education && data.education.length > 0 ? data.education : prev.education,
+                    experience: data.experience && data.experience.length > 0 ? data.experience : prev.experience,
+                    skills: data.skills && data.skills.length > 0 ? data.skills : prev.skills,
+                    projects: data.projects && data.projects.length > 0 ? data.projects : prev.projects
+                }));
+
+                toast.success("Resume data automatically filled and enhanced!", { id: 'upload-toast' });
+            } catch (error) {
+                console.error(error);
+                toast.error(error.response?.data?.message || "Failed to parse resume.", { id: 'upload-toast' });
+            } finally {
+                if (fileInputRef.current) fileInputRef.current.value = '';
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+
     // Update Navbar Title and Actions
     useEffect(() => {
         setTitle('Resume Editor');
         setActions(
             <div className="flex items-center gap-3">
+                <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    hidden 
+                    accept="application/pdf, image/jpeg, image/png, image/jpg" 
+                    onChange={handleFileUpload} 
+                />
+                <button
+                    onClick={() => fileInputRef.current?.click()}
+                    title="Auto-fill with AI"
+                    className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-[#3c5a38] bg-green-50 hover:bg-green-100 rounded-lg transition-colors border border-green-200"
+                >
+                    <Upload size={16} />
+                    <span className="hidden sm:inline">Upload Resume</span>
+                </button>
+                <div className="h-6 w-px bg-slate-700 mx-1"></div>
+                
                 <button
                     onClick={() => window.location.href = '/templates'}
                     title="Change Template"

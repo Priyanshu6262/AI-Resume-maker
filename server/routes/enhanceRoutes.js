@@ -41,4 +41,61 @@ router.post('/', async (req, res) => {
     }
 });
 
+router.post('/upload', async (req, res) => {
+    try {
+        const { fileData, mimeType } = req.body;
+        
+        if (!process.env.GEMINI_API_KEY) {
+            return res.status(500).json({ message: "Gemini API Key is not configured." });
+        }
+        
+        if (!fileData || !mimeType) {
+            return res.status(400).json({ message: "File data and mimeType are required." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+        const prompt = `You are an expert AI resume parsing assistant. 
+Extract all information from the provided resume document. 
+Crucially, you must fix any spelling or grammar errors and enhance the professional tone of job descriptions and summaries (make them impactful, concise, and use action verbs). 
+
+Return the extracted and enhanced data ONLY as a valid, strict JSON object matching EXACTLY this schema structure:
+{
+  "personalInfo": { "fullName": "", "email": "", "phone": "", "address": "", "summary": "", "linkedIn": "", "website": "", "github": "", "twitter": "" },
+  "education": [{ "school": "", "degree": "", "startDate": "", "endDate": "", "description": "" }],
+  "experience": [{ "company": "", "position": "", "startDate": "", "endDate": "", "description": "" }],
+  "skills": [{ "name": "", "level": "Intermediate" }],
+  "projects": [{ "name": "", "description": "", "link": "", "technologies": "" }]
+}
+Do not include any markdown formatting like \`\`\`json. Return raw JSON only.`;
+
+        const imageParts = [
+            {
+                inlineData: {
+                    data: fileData,
+                    mimeType
+                }
+            }
+        ];
+
+        const result = await model.generateContent([prompt, ...imageParts]);
+        const response = await result.response;
+        let text = response.text().trim();
+        
+        // Remove markdown formatting if the model still outputs it
+        if (text.startsWith('\`\`\`json')) text = text.substring(7);
+        if (text.startsWith('\`\`\`')) text = text.substring(3);
+        if (text.endsWith('\`\`\`')) text = text.substring(0, text.length - 3);
+        text = text.trim();
+
+        const resumeJSON = JSON.parse(text);
+        res.json(resumeJSON);
+
+    } catch (error) {
+        console.error("AI Upload Extraction Error:", error);
+        res.status(500).json({ message: "Failed to parse resume with AI." });
+    }
+});
+
 module.exports = router;

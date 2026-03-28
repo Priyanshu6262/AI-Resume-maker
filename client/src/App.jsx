@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
+import AuthPage from './pages/AuthPage';
 import TemplateSelection from './pages/TemplateSelection';
 import Editor from './pages/Editor';
 import SavedResumes from './pages/SavedResumes';
@@ -7,6 +8,7 @@ import Wishlist from './pages/Wishlist';
 import Profile from './pages/Profile';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ProtectedRoute from './components/ProtectedRoute';
 import { Toaster } from 'react-hot-toast';
 
 import { NavbarProvider } from './context/NavbarContext';
@@ -23,11 +25,13 @@ function App() {
             <main className="flex-grow">
               <Routes>
                 <Route path="/" element={<LandingPage />} />
-                <Route path="/templates" element={<TemplateSelection />} />
-                <Route path="/editor" element={<Editor />} />
-                <Route path="/saved-resumes" element={<SavedResumes />} />
-                <Route path="/wishlist" element={<Wishlist />} />
-                <Route path="/profile" element={<Profile />} />
+                <Route path="/login" element={<AuthPage />} />
+                <Route path="/register" element={<AuthPage />} />
+                <Route path="/templates" element={<ProtectedRoute><TemplateSelection /></ProtectedRoute>} />
+                <Route path="/editor" element={<ProtectedRoute><Editor /></ProtectedRoute>} />
+                <Route path="/saved-resumes" element={<ProtectedRoute><SavedResumes /></ProtectedRoute>} />
+                <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
+                <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
               </Routes>
             </main>
             <Footer />

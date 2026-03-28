@@ -377,7 +377,7 @@ const ResumeForm = ({ data, updateData }) => {
                         <div key={index} className="flex items-center gap-2 bg-slate-800 border border-slate-600 rounded-lg p-1.5 pl-3 group focus-within:ring-1 focus-within:ring-purple-500">
                             <input
                                 type="text"
-                                value={skill}
+                                value={typeof skill === 'object' ? skill.name : skill}
                                 onChange={(e) => {
                                     const newSkills = [...data.skills];
                                     newSkills[index] = e.target.value;

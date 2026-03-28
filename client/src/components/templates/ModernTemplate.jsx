@@ -24,7 +24,7 @@ const ModernTemplate = ({ data }) => {
                         <h2 className="text-lg font-bold border-b border-slate-600 mb-4 pb-1">Skills</h2>
                         <div className="flex flex-wrap gap-2">
                             {skills.map((skill, i) => (
-                                <span key={i} className="bg-slate-700 px-2 py-1 rounded text-xs">{skill}</span>
+                                <span key={i} className="bg-slate-700 px-2 py-1 rounded text-xs">{typeof skill === 'object' ? skill.name : skill}</span>
                             ))}
                         </div>
                     </div>

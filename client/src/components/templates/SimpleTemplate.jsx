@@ -68,7 +68,7 @@ const SimpleTemplate = ({ data }) => {
         SkillsList: () => (
             <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-slate-700 mb-4">
                 {skills.map((skill, i) => (
-                    <span key={i} className="font-medium">★ {skill}</span>
+                    <span key={i} className="font-medium">★ {typeof skill === 'object' ? skill.name : skill}</span>
                 ))}
             </div>
         )

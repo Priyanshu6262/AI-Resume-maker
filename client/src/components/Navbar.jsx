@@ -1,15 +1,19 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useNavbar } from '../context/NavbarContext';
 import { useAuth } from '../context/AuthContext';
-import { User, LogOut, FileText, ChevronDown, Edit, Save, Heart } from 'lucide-react';
+import { User, LogOut, FileText, ChevronDown, Edit, Save, Heart, Upload } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { useState, useRef, useEffect } from 'react';
 
 const Navbar = () => {
     const { title, actions, dropdownItems } = useNavbar();
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
+
+    const isLandingPage = location.pathname === '/';
 
     const handleLogout = () => {
         logout();
@@ -21,7 +25,6 @@ const Navbar = () => {
         return name.charAt(0).toUpperCase();
     };
 
-    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -34,24 +37,39 @@ const Navbar = () => {
         };
     }, []);
 
+    // Helper for active link styles
+    const getLinkStyle = (path, hash) => {
+        const isActive = hash 
+            ? location.pathname === '/' && location.hash === hash 
+            : location.pathname === path && !location.hash;
+        
+        return isActive 
+            ? 'text-[#3c5a38] font-bold border-b-2 border-[#3c5a38] pb-1 transition-colors'
+            : 'text-slate-600 hover:text-[#3c5a38] font-medium transition-colors pb-1 border-b-2 border-transparent hover:border-[#3c5a38]/30';
+    };
+
     return (
-        <nav className="bg-slate-900 border-b border-slate-800 text-white sticky top-0 z-50">
-            <div className="container mx-auto px-6 py-2 flex justify-between items-center relative">
+        <nav className="bg-white border-b border-gray-100 text-slate-800 sticky top-0 z-50 shadow-sm transition-colors duration-300">
+            <div className="container mx-auto px-6 py-4 flex justify-between items-center relative">
+                
                 {/* Logo / Home Link */}
                 <div className="flex items-center gap-8">
-                    <Link to="/" className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-500 hover:opacity-80 transition-opacity z-10">
-                        ResumeAI
+                    <Link to="/" className="text-2xl font-extrabold text-slate-900 hover:opacity-80 transition-opacity z-10 flex items-center">
+                        resume<span className="text-[#3c5a38]">.</span>
                     </Link>
 
-                    {/* Main Nav Links - HIDDEN/REMOVED as per request */}
-                    {/* <div className="hidden md:flex space-x-6">
-                        <Link to="/templates" className="flex items-center gap-2 hover:text-purple-400 transition-colors font-medium">
-                            <FileText size={18} /> Templates
-                        </Link>
-                    </div> */}
+                    {/* Navigation Links (Visible on Landing Page OR if user is logged in) */}
+                    {(isLandingPage || user) && (
+                        <div className="hidden md:flex items-center gap-8 text-sm pt-1">
+                            <Link to="/" className={getLinkStyle('/', '')}>Home</Link>
+                            <a href="/#features" className={getLinkStyle('/', '#features')}>Features</a>
+                            <Link to="/templates" className={getLinkStyle('/templates', '')}>Templates</Link>
+                            <a href="/#contact" className={getLinkStyle('/', '#contact')}>Contact</a>
+                        </div>
+                    )}
 
-                    {/* Global Toolbar Container next to Logo */}
-                    <div id="global-quill-toolbar" className={title === 'Resume Editor' ? "ql-toolbar ql-snow flex items-center gap-1 bg-slate-800/80 rounded-lg px-2 py-1 ml-4" : "hidden"}>
+                    {/* Global Toolbar Container */}
+                    <div id="global-quill-toolbar" className={title === 'Resume Editor' ? "ql-toolbar ql-snow flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-lg px-2 py-1 ml-4 shadow-sm" : "hidden"}>
                         <select className="ql-font" defaultValue="sans-serif">
                             <option value="sans-serif"></option>
                             <option value="serif"></option>
@@ -67,20 +85,19 @@ const Navbar = () => {
                             <option value="24px"></option>
                             <option value="30px"></option>
                         </select>
-                        <div className="w-px h-5 bg-slate-600 mx-1"></div>
+                        <div className="w-px h-5 bg-gray-300 mx-1"></div>
                         <select className="ql-color"></select>
-                        <div className="w-px h-5 bg-slate-600 mx-1"></div>
+                        <div className="w-px h-5 bg-gray-300 mx-1"></div>
                         <button className="ql-bold"></button>
                         <button className="ql-italic"></button>
                         <button className="ql-underline"></button>
                     </div>
                 </div>
 
-                {/* Centered Title */}
-                <div className="absolute left-1/2 transform -translate-x-1/2 hidden md:block">
-                    {/* Centered Title (Dynamic) - Hide if it is 'ResumeAI' or 'Resume Editor' to avoid duplication/collision */}
-                    {title !== 'ResumeAI' && title !== 'Resume Editor' && (
-                        <div className="font-semibold text-lg tracking-wide text-center">
+                {/* Centered Title -> only on internal pages */}
+                <div className="absolute left-1/2 transform -translate-x-1/2 hidden xl:block z-0">
+                    {!isLandingPage && title !== 'ResumeAI' && title !== 'Resume Editor' && (
+                        <div className="font-semibold text-lg tracking-wide text-center text-slate-800">
                             {title}
                         </div>
                     )}
@@ -100,26 +117,26 @@ const Navbar = () => {
                         <div className="relative" ref={dropdownRef}>
                             <button
                                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                className="flex items-center gap-2 focus:outline-none hover:bg-slate-800 p-2 rounded-lg transition-colors"
+                                className="flex items-center gap-2 focus:outline-none p-2 rounded-lg transition-colors hover:bg-gray-100 text-slate-800"
                             >
                                 {user.avatar ? (
-                                    <img src={user.avatar} alt="Profile" className="w-8 h-8 rounded-full object-cover border border-slate-600" />
+                                    <img src={user.avatar} alt="Profile" className="w-8 h-8 rounded-full object-cover border border-gray-200 shadow-sm" />
                                 ) : (
-                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-sm font-bold shadow-md ring-1 ring-slate-700">
+                                    <div className="w-8 h-8 rounded-full bg-[#3c5a38] flex items-center justify-center text-sm font-bold shadow-md text-white">
                                         {getInitials(user.name)}
                                     </div>
                                 )}
-                                <span className="text-sm font-medium hidden sm:block max-w-[100px] truncate">
+                                <span className="text-sm font-medium hidden sm:block max-w-[100px] truncate text-slate-800">
                                     {user.name}
                                 </span>
-                                <ChevronDown size={14} className={`transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                                <ChevronDown size={14} className={`text-slate-500 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
                             </button>
 
                             {/* Dropdown Menu */}
                             {isDropdownOpen && (
-                                <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-2xl py-2 text-slate-800 transform origin-top-right transition-all duration-200 border border-slate-200">
-                                    <div className="px-4 py-2 border-b border-slate-100 mb-2">
-                                        <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Account</p>
+                                <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-2xl py-2 text-slate-800 transform origin-top-right transition-all duration-200 border border-gray-100">
+                                    <div className="px-4 py-2 border-b border-gray-100 mb-2">
+                                        <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Account</p>
                                         <p className="text-sm font-medium truncate">{user.email}</p>
                                     </div>
 
@@ -127,29 +144,28 @@ const Navbar = () => {
                                     <div className="flex flex-col">
                                         <Link
                                             to="/profile"
-                                            className="px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2 text-slate-700 transition-colors"
+                                            className="px-4 py-2 text-sm hover:bg-gray-50 flex items-center gap-2 text-slate-700 transition-colors"
                                             onClick={() => setIsDropdownOpen(false)}
                                         >
-                                            <Edit size={16} /> Profile Edit
+                                            <Edit size={16} className="text-[#3c5a38]" /> Profile Edit
                                         </Link>
 
                                         <Link
                                             to="/saved-resumes"
-                                            className="px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2 text-slate-700 transition-colors"
+                                            className="px-4 py-2 text-sm hover:bg-gray-50 flex items-center gap-2 text-slate-700 transition-colors"
                                             onClick={() => setIsDropdownOpen(false)}
                                         >
-                                            <Save size={16} /> Save Resume
+                                            <Save size={16} className="text-[#3c5a38]" /> Save Resume
                                         </Link>
 
                                         <Link
                                             to="/wishlist"
-                                            className="px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2 text-slate-700 transition-colors"
+                                            className="px-4 py-2 text-sm hover:bg-gray-50 flex items-center gap-2 text-slate-700 transition-colors"
                                             onClick={() => setIsDropdownOpen(false)}
                                         >
-                                            <Heart size={16} /> Templates Wishlist
+                                            <Heart size={16} className="text-[#3c5a38]" /> Templates Wishlist
                                         </Link>
 
-                                        {/* Dynamic Items from Context (if any remain pertinent) */}
                                         {dropdownItems.map((item, index) => (
                                             <button
                                                 key={index}
@@ -157,14 +173,14 @@ const Navbar = () => {
                                                     item.onClick();
                                                     setIsDropdownOpen(false);
                                                 }}
-                                                className="w-full text-left px-4 py-2 text-sm hover:bg-slate-50 flex items-center gap-2 text-slate-700 hover:text-blue-600 transition-colors"
+                                                className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 flex items-center gap-2 text-slate-700 hover:text-[#3c5a38] transition-colors"
                                             >
                                                 {item.icon}
                                                 {item.label}
                                             </button>
                                         ))}
 
-                                        <div className="border-t border-slate-100 mt-2 pt-2">
+                                        <div className="border-t border-gray-100 mt-2 pt-2">
                                             <button
                                                 onClick={handleLogout}
                                                 className="w-full text-left px-4 py-2 text-sm hover:bg-red-50 text-red-600 flex items-center gap-2 transition-colors"
@@ -178,11 +194,11 @@ const Navbar = () => {
                         </div>
                     ) : (
                         <div className="flex items-center gap-3">
-                            <Link to="/login" className="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white transition-colors">
-                                Login
+                            <Link to="/register" className="px-5 py-2 text-sm font-semibold bg-[#3c5a38] hover:bg-[#2e452a] text-white rounded-full transition-colors shadow-sm order-2 sm:order-1">
+                                Get started
                             </Link>
-                            <Link to="/register" className="px-4 py-2 text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white rounded-lg transition-opacity">
-                                Register
+                            <Link to="/login" className="px-5 py-2 text-sm font-semibold border border-gray-200 hover:border-gray-300 text-slate-700 rounded-full transition-colors bg-white hover:bg-gray-50 order-1 sm:order-2">
+                                Login
                             </Link>
                         </div>
                     )}
