@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 
 const AuthPage = () => {
     const { login } = useAuth();
-    const [isLogin, setIsLogin] = useState(false); // Default to signup based on mockup "Get Started Now", but users can toggle
+    const location = useLocation();
+    const [isLogin, setIsLogin] = useState(location.pathname === '/login'); // Default based on route
     const [formData, setFormData] = useState({ name: '', email: '', password: '' });
     const [agreedToTerms, setAgreedToTerms] = useState(false);
     const navigate = useNavigate();
@@ -52,7 +53,7 @@ const AuthPage = () => {
                                     type="text"
                                     name="name"
                                     placeholder="Enter your name"
-                                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#3c5a38] focus:border-[#3c5a38] transition-colors shadow-sm placeholder-gray-300"
+                                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600 shadow-sm placeholder-gray-300"
                                     onChange={handleChange}
                                     required
                                 />
@@ -64,7 +65,7 @@ const AuthPage = () => {
                                 type="email"
                                 name="email"
                                 placeholder="Enter your email"
-                                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#3c5a38] focus:border-[#3c5a38] transition-colors shadow-sm placeholder-gray-300"
+                                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600 shadow-sm placeholder-gray-300"
                                 onChange={handleChange}
                                 required
                             />
@@ -75,7 +76,7 @@ const AuthPage = () => {
                                 type="password"
                                 name="password"
                                 placeholder="Enter your password"
-                                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-[#3c5a38] focus:border-[#3c5a38] transition-colors shadow-sm placeholder-gray-300"
+                                className="w-full px-4 py-3 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600 shadow-sm placeholder-gray-300"
                                 onChange={handleChange}
                                 required
                             />
@@ -88,7 +89,7 @@ const AuthPage = () => {
                                     id="terms"
                                     checked={agreedToTerms}
                                     onChange={(e) => setAgreedToTerms(e.target.checked)}
-                                    className="w-4 h-4 text-[#3c5a38] bg-white border-gray-300 rounded focus:ring-[#3c5a38] focus:ring-2 cursor-pointer"
+                                    className="w-4 h-4 text-green-600 bg-white border-gray-300 rounded focus:ring-green-600 focus:ring-2 cursor-pointer"
                                 />
                                 <label htmlFor="terms" className="text-xs font-medium text-slate-800 cursor-pointer">
                                     I agree to the terms & policy
@@ -98,7 +99,7 @@ const AuthPage = () => {
 
                         <button
                             type="submit"
-                            className="w-full bg-[#3c5a38] hover:bg-[#2e452a] text-white font-semibold py-3.5 rounded-lg shadow-md transition-colors text-sm mt-4"
+                            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3.5 rounded-lg shadow-md text-sm mt-4"
                         >
                             {isLogin ? 'Sign In' : 'Signup'}
                         </button>
@@ -113,7 +114,7 @@ const AuthPage = () => {
 
                     {/* Social Logins */}
                     <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                        <button type="button" className="flex-1 flex items-center justify-center gap-3 px-4 py-2.5 border border-gray-200 rounded-full hover:bg-gray-50 transition-colors bg-white font-medium text-sm text-slate-700 shadow-sm">
+                        <button type="button" className="flex-1 flex items-center justify-center gap-3 px-4 py-2.5 border border-gray-200 rounded-full hover:bg-gray-50 bg-white font-medium text-sm text-slate-700 shadow-sm">
                             <svg className="w-4 h-4" viewBox="0 0 24 24">
                                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
@@ -123,7 +124,7 @@ const AuthPage = () => {
                             </svg>
                             Sign in with Google
                         </button>
-                        <button type="button" className="flex-1 flex items-center justify-center gap-3 px-4 py-2.5 border border-gray-200 rounded-full hover:bg-gray-50 transition-colors bg-white font-medium text-sm text-slate-700 shadow-sm">
+                        <button type="button" className="flex-1 flex items-center justify-center gap-3 px-4 py-2.5 border border-gray-200 rounded-full hover:bg-gray-50 bg-white font-medium text-sm text-slate-700 shadow-sm">
                             <svg className="w-5 h-5 text-black" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M16.365 7.172c-.035-.045-1.464-1.748-3.664-1.748-2.553 0-3.9 1.944-4.8 3.522-.843 1.474-3.567 7.098-1.574 10.63.793 1.405 1.902 2.378 2.834 2.378.895 0 1.259-.57 2.65-.57 1.344 0 1.69.574 2.664.57s2.176-1.125 2.854-2.21a9.239 9.239 0 0 0 1.218-2.607S15.655 16 15.61 12.83c-.046-2.54 1.832-3.826 1.832-3.826a5.532 5.532 0 0 0-4.04-2.14m-1.393-5.26c-1.258.077-2.673.882-3.483 1.87-.714.87-1.173 2.05-1 3.167 1.385.053 2.637-.735 3.43-1.688.847-1.008 1.21-2.246 1.053-3.35Z" />
                             </svg>
@@ -136,7 +137,7 @@ const AuthPage = () => {
                         {isLogin ? "Don't have an account? " : "Have an account? "}
                         <button
                             type="button"
-                            className="text-blue-600 hover:text-blue-700 transition-colors focus:outline-none"
+                            className="text-blue-600 hover:text-blue-700 focus:outline-none"
                             onClick={() => setIsLogin(!isLogin)}
                         >
                             {isLogin ? 'Signup' : 'Sign In'}
