@@ -98,4 +98,62 @@ Do not include any markdown formatting like \`\`\`json. Return raw JSON only.`;
     }
 });
 
+router.post('/generate-from-jd', async (req, res) => {
+    try {
+        const { jobDescription, requiredSkills, projectDetails } = req.body;
+        
+        if (!process.env.GEMINI_API_KEY) {
+            return res.status(500).json({ message: "Gemini API Key is not configured." });
+        }
+        
+        if (!jobDescription) {
+            return res.status(400).json({ message: "Job description is required." });
+        }
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+        const prompt = `You are an expert resume writer. Ensure the tone is highly professional and impactful.
+Based on the following Job Description and user's context, generate a tailored Professional Summary, a list of relevant Skills, and improved Project Descriptions highlighting the user's fit for this role.
+
+Job Description & Role Info:
+${jobDescription}
+
+Required Skills (Target):
+${requiredSkills || 'None provided'}
+
+User's Existing Project Details / Context:
+${projectDetails || 'None provided'}
+
+Return the generated content ONLY as a valid, strict JSON object matching EXACTLY this schema structure:
+{
+  "summary": "Your generated highly impactful professional summary targeting this specific role.",
+  "skills": [
+    "Skill 1", "Skill 2"
+  ],
+  "projects": [
+    { "title": "Project Title", "description": "High-impact description tailored to job requirements", "link": "" }
+  ]
+}
+Do not include any markdown formatting like \`\`\`json. Return raw JSON only.`;
+
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        let text = response.text().trim();
+        
+        // Remove markdown formatting if the model still outputs it
+        if (text.startsWith('\`\`\`json')) text = text.substring(7);
+        if (text.startsWith('\`\`\`')) text = text.substring(3);
+        if (text.endsWith('\`\`\`')) text = text.substring(0, text.length - 3);
+        text = text.trim();
+
+        const generatedData = JSON.parse(text);
+        res.json(generatedData);
+
+    } catch (error) {
+        console.error("AI Generation from JD Error:", error);
+        res.status(500).json({ message: "Failed to generate AI content from Job Description." });
+    }
+});
+
 module.exports = router;

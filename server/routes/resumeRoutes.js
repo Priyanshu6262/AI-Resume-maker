@@ -55,6 +55,7 @@ router.post('/', protect, async (req, res) => {
         const savedResume = await resume.save();
         res.json(savedResume);
     } catch (error) {
+        console.error("Save Resume Error:", error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 });

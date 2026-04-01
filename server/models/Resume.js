@@ -11,6 +11,8 @@ const resumeSchema = new mongoose.Schema({
         linkedIn: String,
         website: String,
         summary: String,
+        github: String,
+        twitter: String,
     },
     education: [
         {
@@ -33,6 +35,7 @@ const resumeSchema = new mongoose.Schema({
             title: String,
             description: String,
             link: String,
+            sourceLink: String,
         }
     ],
 }, { timestamps: true });
