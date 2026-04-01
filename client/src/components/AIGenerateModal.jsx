@@ -43,7 +43,7 @@ const AIGenerateModal = ({ isOpen, onClose, onGenerate }) => {
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-slate-100 bg-slate-50/50">
                     <div className="flex items-center gap-3">
-                        <div className="p-2 bg-green-100 text-[#3c5a38] rounded-lg">
+                        <div className="p-2 bg-green-100 text-green-600 rounded-lg">
                             <Sparkles size={24} />
                         </div>
                         <div>
@@ -53,7 +53,7 @@ const AIGenerateModal = ({ isOpen, onClose, onGenerate }) => {
                     </div>
                     <button 
                         onClick={onClose}
-                        className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-2 rounded-full transition-colors"
+                        className="text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-2 rounded-full"
                     >
                         <X size={20} />
                     </button>
@@ -69,7 +69,7 @@ const AIGenerateModal = ({ isOpen, onClose, onGenerate }) => {
                         <textarea
                             value={jobDescription}
                             onChange={(e) => setJobDescription(e.target.value)}
-                            className="w-full p-3 border border-slate-200 rounded-xl focus:border-[#3c5a38] focus:ring-1 focus:ring-[#3c5a38] outline-none transition-all placeholder:text-slate-400 min-h-[120px] resize-y text-slate-700 shadow-sm"
+                            className="w-full p-3 border border-slate-200 rounded-xl focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none placeholder:text-slate-400 min-h-[120px] resize-y text-slate-700 shadow-sm"
                             placeholder="Paste the job description or role requirements here..."
                         />
                     </div>
@@ -81,7 +81,7 @@ const AIGenerateModal = ({ isOpen, onClose, onGenerate }) => {
                         <textarea
                             value={requiredSkills}
                             onChange={(e) => setRequiredSkills(e.target.value)}
-                            className="w-full p-3 border border-slate-200 rounded-xl focus:border-[#3c5a38] focus:ring-1 focus:ring-[#3c5a38] outline-none transition-all placeholder:text-slate-400 min-h-[80px] resize-y text-slate-700 shadow-sm"
+                            className="w-full p-3 border border-slate-200 rounded-xl focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none placeholder:text-slate-400 min-h-[80px] resize-y text-slate-700 shadow-sm"
                             placeholder="E.g. React, Node.js, Agile, AWS..."
                         />
                     </div>
@@ -93,7 +93,7 @@ const AIGenerateModal = ({ isOpen, onClose, onGenerate }) => {
                         <textarea
                             value={projectDetails}
                             onChange={(e) => setProjectDetails(e.target.value)}
-                            className="w-full p-3 border border-slate-200 rounded-xl focus:border-[#3c5a38] focus:ring-1 focus:ring-[#3c5a38] outline-none transition-all placeholder:text-slate-400 min-h-[100px] resize-y text-slate-700 shadow-sm"
+                            className="w-full p-3 border border-slate-200 rounded-xl focus:border-green-600 focus:ring-1 focus:ring-green-600 outline-none placeholder:text-slate-400 min-h-[100px] resize-y text-slate-700 shadow-sm"
                             placeholder="Briefly describe your existing projects or context so the AI can align them with the job."
                         />
                     </div>
@@ -111,14 +111,14 @@ const AIGenerateModal = ({ isOpen, onClose, onGenerate }) => {
                     <button
                         onClick={onClose}
                         disabled={loading}
-                        className="px-6 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-200 bg-slate-100 rounded-xl transition-colors disabled:opacity-50"
+                        className="px-6 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-200 bg-slate-100 rounded-xl disabled:opacity-50"
                     >
                         Cancel
                     </button>
                     <button
                         onClick={handleGenerate}
                         disabled={loading || !jobDescription.trim()}
-                        className="px-6 py-2.5 text-sm font-semibold text-white bg-[#3c5a38] hover:bg-[#2e452a] rounded-xl transition-all disabled:opacity-50 flex items-center gap-2 shadow-md hover:shadow-lg disabled:hover:shadow-md"
+                        className="px-6 py-2.5 text-sm font-semibold text-white bg-green-600 hover:bg-green-700 rounded-xl disabled:opacity-50 flex items-center gap-2 shadow-sm"
                     >
                         {loading ? (
                             <>
