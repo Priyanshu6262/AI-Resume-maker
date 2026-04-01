@@ -50,14 +50,14 @@ const ResumeForm = ({ data, updateData }) => {
         updateData((prev) => ({ ...prev, [section]: newArray }));
     };
 
-    const inputClasses = "w-full p-2.5 bg-slate-800 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all";
-    const labelClasses = "block text-sm font-medium text-slate-300 mb-1";
-    const sectionTitleClasses = "text-lg font-bold text-white mb-4 border-b border-slate-700 pb-2";
+    const inputClasses = "w-full p-2.5 bg-white border border-slate-300 rounded-lg text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600";
+    const labelClasses = "block text-sm font-medium text-slate-700 mb-1";
+    const sectionTitleClasses = "text-lg font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2";
 
     return (
         <div className="space-y-8 pb-10">
             {/* Personal Info */}
-            <section className="bg-slate-800/50 p-6 rounded-xl border border-slate-700">
+            <section className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
                 <h3 className={sectionTitleClasses}>Personal Information</h3>
                 <div className="grid grid-cols-1 gap-4">
                     <div>
@@ -142,12 +142,12 @@ const ResumeForm = ({ data, updateData }) => {
                     </div>
                     <div>
                         <div className="flex justify-between items-center mb-1">
-                            <label className="text-sm font-medium text-slate-300">Professional Summary</label>
+                            <label className="text-sm font-medium text-slate-700">Professional Summary</label>
                             <button
                                 type="button"
                                 onClick={() => enhanceText(data.personalInfo.summary, 'summary', 'summary', (newText) => handleChange('personalInfo', 'summary', newText))}
                                 disabled={enhancingField === 'summary'}
-                                className="text-xs flex items-center gap-1 text-purple-400 hover:text-purple-300 font-medium transition-colors disabled:opacity-50"
+                                className="text-xs flex items-center gap-1 text-green-600 hover:text-green-700 font-medium disabled:opacity-50"
                             >
                                 {enhancingField === 'summary' ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
                                 Enhance with AI
@@ -163,22 +163,22 @@ const ResumeForm = ({ data, updateData }) => {
             </section>
 
             {/* Education */}
-            <section className="bg-slate-800/50 p-6 rounded-xl border border-slate-700">
-                <div className="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
-                    <h3 className="text-lg font-bold text-white">Education</h3>
+            <section className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <div className="flex justify-between items-center mb-4 border-b border-slate-200 pb-2">
+                    <h3 className="text-lg font-bold text-slate-900">Education</h3>
                     <button
                         onClick={() => addItem('education', { institution: '', degree: '', year: '' })}
-                        className="text-purple-400 hover:text-purple-300 flex items-center gap-1 text-sm font-medium transition-colors"
+                        className="text-green-600 hover:text-green-700 flex items-center gap-1 text-sm font-medium"
                     >
                         <Plus size={16} /> Add Education
                     </button>
                 </div>
                 <div className="space-y-4">
                     {data.education.map((edu, index) => (
-                        <div key={index} className="p-4 border border-slate-600 rounded-lg bg-slate-800 relative group hover:border-purple-500/50 transition-colors">
+                        <div key={index} className="p-4 border border-slate-200 rounded-lg bg-slate-50 relative group">
                             <button
                                 onClick={() => removeItem('education', index)}
-                                className="absolute top-3 right-3 text-slate-500 hover:text-red-400 opacity-100 transition-colors"
+                                className="absolute top-3 right-3 text-slate-400 hover:text-red-500"
                                 title="Remove"
                             >
                                 <Trash2 size={18} />
@@ -215,22 +215,22 @@ const ResumeForm = ({ data, updateData }) => {
             </section>
 
             {/* Experience */}
-            <section className="bg-slate-800/50 p-6 rounded-xl border border-slate-700">
-                <div className="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
-                    <h3 className="text-lg font-bold text-white">Experience</h3>
+            <section className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <div className="flex justify-between items-center mb-4 border-b border-slate-200 pb-2">
+                    <h3 className="text-lg font-bold text-slate-900">Experience</h3>
                     <button
                         onClick={() => addItem('experience', { company: '', role: '', duration: '', description: '' })}
-                        className="text-purple-400 hover:text-purple-300 flex items-center gap-1 text-sm font-medium transition-colors"
+                        className="text-green-600 hover:text-green-700 flex items-center gap-1 text-sm font-medium"
                     >
                         <Plus size={16} /> Add Experience
                     </button>
                 </div>
                 <div className="space-y-4">
                     {data.experience.map((exp, index) => (
-                        <div key={index} className="p-4 border border-slate-600 rounded-lg bg-slate-800 relative group hover:border-purple-500/50 transition-colors">
+                        <div key={index} className="p-4 border border-slate-200 rounded-lg bg-slate-50 relative group">
                             <button
                                 onClick={() => removeItem('experience', index)}
-                                className="absolute top-3 right-3 text-slate-500 hover:text-red-400 opacity-100 transition-colors"
+                                className="absolute top-3 right-3 text-slate-400 hover:text-red-500"
                                 title="Remove"
                             >
                                 <Trash2 size={18} />
@@ -259,12 +259,12 @@ const ResumeForm = ({ data, updateData }) => {
                                 />
                                 <div className="space-y-1">
                                     <div className="flex justify-between items-center">
-                                        <label className="text-sm font-medium text-slate-300">Description</label>
+                                        <label className="text-sm font-medium text-slate-700">Description</label>
                                         <button
                                             type="button"
                                             onClick={() => enhanceText(exp.description, 'experience', `experience-${index}`, (newText) => handleArrayChange('experience', index, 'description', newText))}
                                             disabled={enhancingField === `experience-${index}`}
-                                            className="text-xs flex items-center gap-1 text-purple-400 hover:text-purple-300 font-medium transition-colors disabled:opacity-50 border border-slate-700 bg-slate-800 px-2 py-1 rounded-md"
+                                            className="text-xs flex items-center gap-1 text-green-600 hover:text-green-700 font-medium disabled:opacity-50 border border-slate-200 bg-white hover:bg-slate-50 px-2 py-1 rounded-md"
                                             title="Enhance with AI"
                                         >
                                             {enhancingField === `experience-${index}` ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
@@ -287,22 +287,22 @@ const ResumeForm = ({ data, updateData }) => {
             </section>
 
             {/* Projects */}
-            <section className="bg-slate-800/50 p-6 rounded-xl border border-slate-700">
-                <div className="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
-                    <h3 className="text-lg font-bold text-white">Projects</h3>
+            <section className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <div className="flex justify-between items-center mb-4 border-b border-slate-200 pb-2">
+                    <h3 className="text-lg font-bold text-slate-900">Projects</h3>
                     <button
                         onClick={() => addItem('projects', { title: '', link: '', sourceLink: '', description: '' })}
-                        className="text-purple-400 hover:text-purple-300 flex items-center gap-1 text-sm font-medium transition-colors"
+                        className="text-green-600 hover:text-green-700 flex items-center gap-1 text-sm font-medium"
                     >
                         <Plus size={16} /> Add Project
                     </button>
                 </div>
                 <div className="space-y-4">
                     {(data.projects || []).map((proj, index) => (
-                        <div key={index} className="p-4 border border-slate-600 rounded-lg bg-slate-800 relative group hover:border-purple-500/50 transition-colors">
+                        <div key={index} className="p-4 border border-slate-200 rounded-lg bg-slate-50 relative group">
                             <button
                                 onClick={() => removeItem('projects', index)}
-                                className="absolute top-3 right-3 text-slate-500 hover:text-red-400 opacity-100 transition-colors"
+                                className="absolute top-3 right-3 text-slate-400 hover:text-red-500"
                                 title="Remove"
                             >
                                 <Trash2 size={18} />
@@ -331,12 +331,12 @@ const ResumeForm = ({ data, updateData }) => {
                                 />
                                 <div className="space-y-1">
                                     <div className="flex justify-between items-center">
-                                        <label className="text-sm font-medium text-slate-300">Description</label>
+                                        <label className="text-sm font-medium text-slate-700">Description</label>
                                         <button
                                             type="button"
                                             onClick={() => enhanceText(proj.description, 'project', `project-${index}`, (newText) => handleArrayChange('projects', index, 'description', newText))}
                                             disabled={enhancingField === `project-${index}`}
-                                            className="text-xs flex items-center gap-1 text-purple-400 hover:text-purple-300 font-medium transition-colors disabled:opacity-50 border border-slate-700 bg-slate-800 px-2 py-1 rounded-md"
+                                            className="text-xs flex items-center gap-1 text-green-600 hover:text-green-700 font-medium disabled:opacity-50 border border-slate-200 bg-white hover:bg-slate-50 px-2 py-1 rounded-md"
                                             title="Enhance with AI"
                                         >
                                             {enhancingField === `project-${index}` ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
@@ -359,22 +359,22 @@ const ResumeForm = ({ data, updateData }) => {
             </section>
 
             {/* Skills */}
-            <section className="bg-slate-800/50 p-6 rounded-xl border border-slate-700">
-                <div className="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
-                    <h3 className="text-lg font-bold text-white">Skills</h3>
+            <section className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <div className="flex justify-between items-center mb-4 border-b border-slate-200 pb-2">
+                    <h3 className="text-lg font-bold text-slate-900">Skills</h3>
                     <button
                         onClick={() => {
                             const newSkills = [...data.skills, ''];
                             updateData(prev => ({ ...prev, skills: newSkills }));
                         }}
-                        className="text-purple-400 hover:text-purple-300 flex items-center gap-1 text-sm font-medium transition-colors"
+                        className="text-green-600 hover:text-green-700 flex items-center gap-1 text-sm font-medium"
                     >
                         <Plus size={16} /> Add Skill
                     </button>
                 </div>
                 <div className="flex flex-wrap gap-3">
                     {data.skills.map((skill, index) => (
-                        <div key={index} className="flex items-center gap-2 bg-slate-800 border border-slate-600 rounded-lg p-1.5 pl-3 group focus-within:ring-1 focus-within:ring-purple-500">
+                        <div key={index} className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg p-1.5 pl-3 group focus-within:ring-1 focus-within:ring-green-600">
                             <input
                                 type="text"
                                 value={typeof skill === 'object' ? skill.name : skill}
@@ -383,14 +383,14 @@ const ResumeForm = ({ data, updateData }) => {
                                     newSkills[index] = e.target.value;
                                     updateData(prev => ({ ...prev, skills: newSkills }));
                                 }}
-                                className="bg-transparent text-white outline-none w-32 placeholder-slate-500 text-sm"
+                                className="bg-transparent text-slate-900 outline-none w-32 placeholder-slate-400 text-sm"
                                 placeholder="Skill"
                             />
                             <button onClick={() => {
                                 const newSkills = [...data.skills];
                                 newSkills.splice(index, 1);
                                 updateData(prev => ({ ...prev, skills: newSkills }));
-                            }} className="text-slate-500 hover:text-red-400 p-1 rounded-full hover:bg-slate-700 transition-colors">
+                            }} className="text-slate-400 hover:text-red-500 p-1 rounded-full hover:bg-slate-200">
                                 <Trash2 size={14} />
                             </button>
                         </div>

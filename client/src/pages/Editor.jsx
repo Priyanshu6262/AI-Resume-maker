@@ -299,12 +299,12 @@ const Editor = () => {
                 <button
                     onClick={() => setIsAiModalOpen(true)}
                     title="Generate from Job Description"
-                    className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-[#3c5a38] bg-green-50 hover:bg-green-100 rounded-lg transition-colors border border-green-200"
+                    className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-green-600 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200"
                 >
                     <Sparkles size={16} />
                     <span className="hidden sm:inline">AI Generate</span>
                 </button>
-                <div className="h-6 w-px bg-slate-700 mx-1"></div>
+                <div className="h-6 w-px bg-slate-300 mx-1"></div>
                 <input 
                     type="file" 
                     ref={fileInputRef} 
@@ -315,26 +315,26 @@ const Editor = () => {
                 <button
                     onClick={() => fileInputRef.current?.click()}
                     title="Auto-fill with AI"
-                    className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-[#3c5a38] bg-green-50 hover:bg-green-100 rounded-lg transition-colors border border-green-200"
+                    className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-green-600 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200"
                 >
                     <Upload size={16} />
                     <span className="hidden sm:inline">Upload Resume</span>
                 </button>
-                <div className="h-6 w-px bg-slate-700 mx-1"></div>
+                <div className="h-6 w-px bg-slate-300 mx-1"></div>
                 
                 <button
                     onClick={() => window.location.href = '/templates'}
                     title="Change Template"
-                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-600 hover:text-white hover:bg-slate-800 rounded-lg"
                 >
                     <FileText size={18} />
                     <span className="hidden sm:inline">Templates</span>
                 </button>
-                <div className="h-6 w-px bg-slate-700 mx-1"></div>
-                <button onClick={handleSave} title="Save Resume" className="p-2 text-slate-300 hover:text-white transition-colors rounded-full hover:bg-slate-800">
+                <div className="h-6 w-px bg-slate-300 mx-1"></div>
+                <button onClick={handleSave} title="Save Resume" className="p-2 text-slate-500 hover:text-slate-900 rounded-full hover:bg-slate-200">
                     <Save size={20} />
                 </button>
-                <button onClick={handleDownload} title="Download PDF" className="p-2 text-slate-300 hover:text-white transition-colors rounded-full hover:bg-slate-800">
+                <button onClick={handleDownload} title="Download PDF" className="p-2 text-slate-500 hover:text-slate-900 rounded-full hover:bg-slate-200">
                     <Download size={20} />
                 </button>
             </div>
@@ -348,14 +348,14 @@ const Editor = () => {
     }, [resumeData]); // Re-run when resumeData changes so handleSave has latest state
 
     return (
-        <div className="h-[calc(100vh-65px)] flex bg-slate-900 overflow-hidden">
+        <div className="h-[calc(100vh-65px)] flex bg-slate-50 overflow-hidden">
             {/* Left Side: Form */}
-            <div className="w-1/2 p-4 overflow-y-auto border-r border-slate-700 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-slate-900 shadow-inner">
+            <div className="w-1/2 p-4 overflow-y-auto border-r border-slate-200 scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-50 shadow-inner">
                 <ResumeForm data={resumeData} updateData={setResumeData} />
             </div>
 
             {/* Right Side: Preview */}
-            <div className="w-1/2 bg-slate-950 overflow-y-auto overflow-x-hidden p-4 flex justify-center items-start relative scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-slate-950">
+            <div className="w-1/2 bg-slate-200/50 overflow-y-auto overflow-x-hidden p-4 flex justify-center items-start relative scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-200/50">
                 {/* Visual indicator for A4 sheet */}
                 <div className="relative shadow-2xl transition-transform origin-top transform scale-[0.65] my-4">
                     {/* The preview container itself must remain white to represent paper */}
