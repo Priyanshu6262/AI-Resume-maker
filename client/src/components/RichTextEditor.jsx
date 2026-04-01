@@ -27,7 +27,7 @@ const formats = [
 
 const RichTextEditor = ({ value, onChange, placeholder, onFocus, onBlur }) => {
     return (
-        <div className="quill-custom-headless bg-slate-800 rounded-lg overflow-hidden border border-slate-600 focus-within:ring-2 focus-within:ring-purple-500 focus-within:border-transparent transition-all">
+        <div className="quill-custom-headless bg-white rounded-lg overflow-hidden border border-slate-300 focus-within:ring-1 focus-within:ring-green-600 focus-within:border-green-600">
             <ReactQuill
                 theme="snow"
                 value={value || ''}
