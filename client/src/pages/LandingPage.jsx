@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import { Play, CheckCircle, Key, ShieldCheck, Download, Star, Check } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const LandingPage = () => {
+    const { user } = useAuth();
+
     return (
         <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-green-200">
             {/* Top Banner */}
@@ -12,9 +15,6 @@ const LandingPage = () => {
 
             {/* Hero Section */}
             <section className="relative pt-24 pb-20 overflow-hidden">
-                {/* Background glow */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-green-50 rounded-full blur-3xl opacity-50 pointer-events-none -z-10"></div>
-                
                 <div className="container mx-auto px-6 text-center">
                     <div className="flex justify-center items-center gap-3 mb-8">
                         <div className="flex -space-x-3">
@@ -42,13 +42,13 @@ const LandingPage = () => {
 
                     <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
                         <Link 
-                            to="/register" 
-                            className="w-full sm:w-auto px-8 py-3.5 bg-green-600 hover:bg-green-700 text-white rounded-full font-semibold transition-colors flex items-center justify-center gap-2 group"
+                            to={user ? "/templates" : "/login"} 
+                            className="w-full sm:w-auto px-8 py-3.5 bg-green-600 hover:bg-green-700 text-white rounded-full font-semibold flex items-center justify-center gap-2"
                         >
                             Get started 
-                            <span className="group-hover:translate-x-1 transition-transform">→</span>
+                            <span>→</span>
                         </Link>
-                        <button className="w-full sm:w-auto px-8 py-3.5 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 rounded-full font-semibold transition-colors flex items-center justify-center gap-2">
+                        <button className="w-full sm:w-auto px-8 py-3.5 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 rounded-full font-semibold flex items-center justify-center gap-2">
                             <Play size={18} />
                             Try demo
                         </button>
@@ -60,73 +60,12 @@ const LandingPage = () => {
             <section className="py-10 border-t border-slate-100 bg-slate-50/50">
                 <div className="container mx-auto px-6 text-center">
                     <p className="text-sm font-medium text-slate-500 mb-8 tracking-wide">Trusting by leading brands, including</p>
-                    <div className="flex flex-wrap justify-center items-center gap-12 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+                    <div className="flex flex-wrap justify-center items-center gap-12">
                         <span className="text-xl font-bold font-serif">Instagram</span>
                         <span className="text-xl font-bold font-sans">Framer</span>
                         <span className="text-xl font-bold">Microsoft</span>
                         <span className="text-xl font-bold italic">HUAWEI</span>
                         <span className="text-xl font-bold tracking-tight">Walmart</span>
-                    </div>
-                </div>
-            </section>
-
-            {/* Build your resume - Feature Section */}
-            <section className="py-24">
-                <div className="container mx-auto px-6">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Build your resume</h2>
-                        <p className="text-slate-600 max-w-2xl mx-auto">
-                            Our streamlined process helps you create a professional resume in minutes with
-                            intelligent AI-powered tools and features.
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-                        <div className="relative">
-                            <div className="absolute inset-0 bg-green-100 rounded-3xl transform -rotate-3 scale-105 -z-10"></div>
-                            <img 
-                                src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
-                                alt="People working" 
-                                className="rounded-2xl shadow-xl w-full object-cover h-[400px]"
-                            />
-                        </div>
-                        <div className="space-y-8">
-                            <div className="bg-purple-50 p-6 rounded-2xl border border-purple-100 flex items-start gap-4">
-                                <div className="mt-1 bg-purple-100 p-2 rounded-lg text-purple-600">
-                                    <Key size={24} />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-slate-900 mb-1">AI-Powered Suggestions</h3>
-                                    <p className="text-slate-600 text-sm">
-                                        Get instant phrasing suggestions and content improvements tailored to your industry.
-                                    </p>
-                                </div>
-                            </div>
-                            
-                            <div className="p-6 flex items-start gap-4">
-                                <div className="mt-1 text-green-600">
-                                    <ShieldCheck size={24} />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-slate-900 mb-1">Bank-Grade Security</h3>
-                                    <p className="text-slate-600 text-sm">
-                                        Your personal data is protected with end-to-end encryption and compliance standards.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="p-6 flex items-start gap-4">
-                                <div className="mt-1 text-amber-500">
-                                    <Download size={24} />
-                                </div>
-                                <div>
-                                    <h3 className="font-bold text-slate-900 mb-1">Customizable Export</h3>
-                                    <p className="text-slate-600 text-sm">
-                                        Export professional, ATS-friendly PDF profiles ready to be sent to recruiters.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </section>

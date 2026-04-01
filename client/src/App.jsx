@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
+import AboutPage from './pages/AboutPage';
+import FeaturesPage from './pages/FeaturesPage';
 import AuthPage from './pages/AuthPage';
 import TemplateSelection from './pages/TemplateSelection';
 import Editor from './pages/Editor';
@@ -25,6 +27,8 @@ function App() {
             <main className="flex-grow">
               <Routes>
                 <Route path="/" element={<LandingPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/features" element={<FeaturesPage />} />
                 <Route path="/login" element={<AuthPage />} />
                 <Route path="/register" element={<AuthPage />} />
                 <Route path="/templates" element={<ProtectedRoute><TemplateSelection /></ProtectedRoute>} />
