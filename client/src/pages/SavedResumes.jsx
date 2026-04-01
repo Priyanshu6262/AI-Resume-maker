@@ -137,19 +137,19 @@ const SavedResumes = () => {
     }, [downloadingResume, isGenerating]);
 
     return (
-        <div className="min-h-screen bg-slate-900 p-8">
-            <h2 className="text-4xl font-extrabold mb-12 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+        <div className="min-h-screen bg-slate-50 p-8">
+            <h2 className="text-4xl font-extrabold mb-12 text-center text-slate-900">
                 My Saved Resumes
             </h2>
 
             {loading ? (
-                <div className="flex justify-center text-white font-medium text-xl">Loading...</div>
+                <div className="flex justify-center text-slate-900 font-medium text-xl">Loading...</div>
             ) : resumes.length === 0 ? (
-                <div className="flex flex-col items-center justify-center text-slate-400 pt-10">
+                <div className="flex flex-col items-center justify-center text-slate-600 pt-10">
                     <p className="text-xl mb-6">You haven't saved any resumes yet.</p>
                     <button
                         onClick={() => navigate('/templates')}
-                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-bold transition-colors"
+                        className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-bold"
                     >
                         <PlusCircle size={20} /> Create New Resume
                     </button>
@@ -157,13 +157,13 @@ const SavedResumes = () => {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 container mx-auto">
                     {resumes.map((resume) => (
-                        <div key={resume._id} className="bg-slate-800 rounded-xl shadow-lg border border-slate-700 p-6 flex flex-col justify-between hover:border-purple-500 transition-colors group">
+                        <div key={resume._id} className="bg-white rounded-xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between hover:border-green-600 group">
                             <div className="mb-6">
-                                <h3 className="text-2xl font-bold text-white mb-2 truncate">
+                                <h3 className="text-2xl font-bold text-slate-900 mb-2 truncate">
                                     {resume.personalInfo?.fullName || 'Untitled Resume'}
                                 </h3>
-                                <p className="text-slate-400 text-sm capitalize">
-                                    Template: <span className="text-blue-400 font-medium">{resume.templateId}</span>
+                                <p className="text-slate-600 text-sm capitalize">
+                                    Template: <span className="text-green-600 font-medium">{resume.templateId}</span>
                                 </p>
                                 <p className="text-slate-500 text-xs mt-2">
                                     Last saved: {new Date(resume.updatedAt).toLocaleDateString()} at {new Date(resume.updatedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
@@ -172,37 +172,37 @@ const SavedResumes = () => {
 
                             <div className="mt-auto">
                                 <div className="mb-4">
-                                    <label className="text-xs text-slate-400 font-medium mb-1 flex items-center justify-between">
+                                    <label className="text-xs text-slate-600 font-medium mb-1 flex items-center justify-between">
                                         Resume for:
                                         <span className="text-[10px] text-slate-500 italic px-2">(Future functionality)</span>
                                     </label>
                                     <input 
                                         type="text" 
                                         placeholder="e.g. Frontend Developer Role..." 
-                                        className="w-full bg-slate-900 border border-slate-700 rounded-md p-2 text-sm text-slate-300 focus:outline-none cursor-not-allowed opacity-70"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-md p-2 text-sm text-slate-600 focus:outline-none cursor-not-allowed opacity-70"
                                         disabled
                                         title="This functionality will be activated in a future update"
                                     />
                                 </div>
 
-                                <div className="flex gap-3 border-t border-slate-700 pt-4">
+                                <div className="flex gap-3 border-t border-slate-200 pt-4">
                                     <button
                                         onClick={() => navigate(`/editor?template=${resume.templateId}&id=${resume._id}`)}
-                                        className="flex-1 flex items-center justify-center gap-2 bg-slate-700 hover:bg-slate-600 text-white py-2 rounded-lg transition-colors font-medium text-sm"
+                                        className="flex-1 flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2 rounded-lg font-medium text-sm"
                                     >
                                         <Edit size={16} /> Edit
                                     </button>
                                     <button
                                         onClick={() => handleDownloadClick(resume)}
                                         disabled={isGenerating && downloadingResume?._id === resume._id}
-                                        className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white py-2 rounded-lg transition-all font-medium text-sm disabled:opacity-50"
+                                        className="flex-1 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-medium text-sm disabled:opacity-50"
                                     >
                                         <DownloadIcon size={16} /> 
                                         {isGenerating && downloadingResume?._id === resume._id ? 'Generating...' : 'Download'}
                                     </button>
                                     <button
                                         onClick={(e) => handleDeleteResume(resume._id, e)}
-                                        className="flex-none p-2 bg-slate-700 hover:bg-red-500/20 text-slate-400 hover:text-red-400 rounded-lg transition-colors shadow-sm"
+                                        className="flex-none p-2 bg-slate-100 hover:bg-red-100 text-slate-500 hover:text-red-500 rounded-lg shadow-sm"
                                         title="Delete Resume"
                                     >
                                         <Trash2 size={18} />

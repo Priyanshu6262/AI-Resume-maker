@@ -62,114 +62,110 @@ const Profile = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-900 py-12 px-6 flex items-center justify-center relative overflow-hidden">
-            {/* Ambient background glows */}
-            <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-600/20 rounded-full blur-[120px] pointer-events-none"></div>
-            <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
-
+        <div className="min-h-screen bg-slate-50 py-12 px-6 flex items-center justify-center relative overflow-hidden">
             <div className="max-w-xl w-full relative z-10">
                 <button 
                     onClick={() => navigate(-1)}
-                    className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-8 font-medium"
+                    className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-8 font-medium"
                 >
                     <ArrowLeft size={18} /> Back
                 </button>
 
-                <div className="bg-slate-800/80 backdrop-blur-xl rounded-2xl border border-slate-700 p-8 shadow-2xl">
+                <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
                     <div className="text-center mb-8">
                         <div className="mb-4 inline-block">
                             {avatar ? (
-                                <img src={avatar} alt="Profile Avatar" className="w-24 h-24 rounded-full object-cover border-4 border-slate-700 shadow-lg mx-auto" />
+                                <img src={avatar} alt="Profile Avatar" className="w-24 h-24 rounded-full object-cover border-4 border-slate-200 shadow-sm mx-auto" />
                             ) : (
-                                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center text-3xl font-bold text-white shadow-lg ring-4 ring-slate-800 mx-auto">
+                                <div className="w-24 h-24 rounded-full bg-green-600 flex items-center justify-center text-3xl font-bold text-white shadow-sm ring-4 ring-white mx-auto">
                                     {name ? name.charAt(0).toUpperCase() : 'U'}
                                 </div>
                             )}
                         </div>
-                        <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+                        <h2 className="text-3xl font-extrabold text-slate-900">
                             Edit Profile
                         </h2>
-                        <p className="text-slate-400 mt-2 text-sm">Update your account settings here.</p>
+                        <p className="text-slate-600 mt-2 text-sm">Update your account settings here.</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="space-y-1">
-                            <label className="text-sm font-medium text-slate-300 ml-1">Full Name</label>
+                            <label className="text-sm font-medium text-slate-700 ml-1">Full Name</label>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <User className="h-5 w-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                    <User className="h-5 w-5 text-slate-400 group-focus-within:text-green-600" />
                                 </div>
                                 <input
                                     type="text"
                                     required
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                                    className="w-full pl-10 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
                                     placeholder="Enter your name"
                                 />
                             </div>
                         </div>
 
                         <div className="space-y-1">
-                            <label className="text-sm font-medium text-slate-300 ml-1 flex justify-between">
+                            <label className="text-sm font-medium text-slate-700 ml-1 flex justify-between">
                                 Email Address
                                 <span className="text-[10px] text-slate-500 italic mt-0.5">Read only</span>
                             </label>
                             <div className="relative">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Mail className="h-5 w-5 text-slate-600" />
+                                    <Mail className="h-5 w-5 text-slate-400" />
                                 </div>
                                 <input
                                     type="email"
                                     value={email}
                                     disabled
-                                    className="w-full pl-10 pr-4 py-3 bg-slate-900/30 border border-slate-700/50 rounded-xl text-slate-400 cursor-not-allowed"
+                                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed"
                                 />
                             </div>
                         </div>
 
                         <div className="space-y-1">
-                            <label className="text-sm font-medium text-slate-300 ml-1">Avatar Image URL (Optional)</label>
+                            <label className="text-sm font-medium text-slate-700 ml-1">Avatar Image URL (Optional)</label>
                             <div className="relative group">
                                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <LinkIcon className="h-5 w-5 text-slate-500 group-focus-within:text-purple-400 transition-colors" />
+                                    <LinkIcon className="h-5 w-5 text-slate-400 group-focus-within:text-green-600" />
                                 </div>
                                 <input
                                     type="url"
                                     value={avatar}
                                     onChange={(e) => setAvatar(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all"
+                                    className="w-full pl-10 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
                                     placeholder="https://example.com/your-image.png"
                                 />
                             </div>
                         </div>
 
-                        <div className="border-t border-slate-700/50 pt-6 mt-6">
-                            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 ml-1">Change Password</h3>
+                        <div className="border-t border-slate-200 pt-6 mt-6">
+                            <h3 className="text-sm font-bold text-slate-600 uppercase tracking-wider mb-4 ml-1">Change Password</h3>
                             
                             <div className="space-y-4">
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <Lock className="h-5 w-5 text-slate-500 group-focus-within:text-blue-400 transition-colors" />
+                                        <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-green-600" />
                                     </div>
                                     <input
                                         type="password"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all"
+                                        className="w-full pl-10 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
                                         placeholder="New Password (leave blank to keep current)"
                                     />
                                 </div>
 
                                 <div className="relative group">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <Lock className="h-5 w-5 text-slate-500 group-focus-within:text-purple-400 transition-colors" />
+                                        <Lock className="h-5 w-5 text-slate-400 group-focus-within:text-green-600" />
                                     </div>
                                     <input
                                         type="password"
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500 transition-all"
+                                        className="w-full pl-10 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-green-600 focus:border-green-600"
                                         placeholder="Confirm New Password"
                                     />
                                 </div>
@@ -179,8 +175,8 @@ const Profile = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className={`w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl text-white font-bold text-lg cursor-pointer transition-all duration-300 mt-8 shadow-lg shadow-blue-900/20 ${
-                                loading ? 'bg-slate-600 opacity-70' : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 hover:shadow-xl hover:-translate-y-0.5'
+                            className={`w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl text-white font-bold text-lg cursor-pointer mt-8 transition-none ${
+                                loading ? 'bg-slate-400 opacity-70' : 'bg-green-600 hover:bg-green-700'
                             }`}
                         >
                             <Save size={20} />

@@ -14,45 +14,45 @@ const TemplateSelection = () => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-900 p-8">
-            <h2 className="text-4xl font-extrabold mb-12 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+        <div className="min-h-screen bg-slate-50 p-8">
+            <h2 className="text-4xl font-extrabold mb-12 text-center text-slate-900">
                 Choose Your Template
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 container mx-auto">
                 {templates.map((template) => (
-                    <div key={template.id} className="relative bg-slate-800 p-5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-slate-700 hover:border-purple-500 transform hover:-translate-y-2 group">
+                    <div key={template.id} className="relative bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:border-green-600 group">
                         <button 
                             onClick={(e) => {
                                 e.stopPropagation();
                                 toggleWishlist(template.id);
                             }}
-                            className="absolute top-8 right-8 z-10 p-2.5 bg-slate-900/40 hover:bg-slate-900/80 rounded-full backdrop-blur-md transition-all shadow-sm group-hover:scale-110"
+                            className="absolute top-8 right-8 z-10 p-2.5 bg-white/80 hover:bg-white rounded-full backdrop-blur-md shadow-sm border border-slate-200"
                             title={wishlist.includes(template.id) ? "Remove from wishlist" : "Add to wishlist"}
                         >
                             <Heart 
-                                className={`w-6 h-6 transition-colors duration-300 ${wishlist.includes(template.id) ? 'fill-red-500 text-red-500' : 'text-white/80 hover:text-red-400'}`} 
+                                className={`w-6 h-6 ${wishlist.includes(template.id) ? 'fill-red-500 text-red-500' : 'text-slate-400 hover:text-red-400'}`} 
                             />
                         </button>
-                        <div className="h-64 bg-slate-700 mb-5 flex items-center justify-center rounded-lg overflow-hidden group-hover:opacity-90 transition-opacity relative">
+                        <div className="h-64 bg-slate-100 mb-5 flex items-center justify-center rounded-lg overflow-hidden relative">
                             {/* Render image if available */}
                             {template.image && !template.image.includes('placeholder') ? (
                                 <img src={template.image} alt={template.name} className="w-full h-full object-cover object-top" />
                             ) : (
-                                <span className="text-slate-400 font-medium group-hover:text-white transition-colors">Preview: {template.name}</span>
+                                <span className="text-slate-500 font-medium">Preview: {template.name}</span>
                             )}
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="font-bold text-xl text-white">{template.name}</span>
+                            <span className="font-bold text-xl text-slate-900">{template.name}</span>
                             <div className="space-x-3 flex">
                                 <button 
                                     onClick={() => setPreviewImage(template.image)}
-                                    className="text-slate-400 hover:text-white font-medium transition-colors"
+                                    className="text-slate-600 hover:text-slate-900 font-medium"
                                 >
                                     Preview
                                 </button>
                                 <button
                                     onClick={() => handleSelect(template.id)}
-                                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-5 py-2.5 rounded-lg shadow-md hover:shadow-lg transition-all font-semibold"
+                                    className="bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-lg shadow-sm font-semibold"
                                 >
                                     Use Template
                                 </button>
@@ -74,7 +74,7 @@ const TemplateSelection = () => {
                     >
                         <button 
                             onClick={() => setPreviewImage(null)}
-                            className="absolute -top-12 -right-2 md:-right-12 text-slate-300 hover:text-white transition-colors p-2 rounded-full hover:bg-white/10"
+                            className="absolute -top-12 -right-2 md:-right-12 text-white hover:bg-white/20 p-2 rounded-full"
                         >
                             <X size={32} />
                         </button>
