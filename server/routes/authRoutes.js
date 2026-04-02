@@ -27,6 +27,10 @@ const protect = (req, res, next) => {
 router.post('/register', async (req, res) => {
     const { name, email, password } = req.body;
 
+    if (!password) {
+        return res.status(400).json({ message: 'Password is required for standard registration.' });
+    }
+
     try {
         const userExists = await User.findOne({ email });
         if (userExists) {
@@ -58,7 +62,7 @@ router.post('/login', async (req, res) => {
     try {
         const user = await User.findOne({ email });
 
-        if (user && (await user.matchPassword(password))) {
+        if (user && user.password && (await user.matchPassword(password))) {
             res.json({
                 _id: user._id,
                 name: user.name,
@@ -71,6 +75,33 @@ router.post('/login', async (req, res) => {
         }
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
+    }
+});
+
+// Unified Social Login - Maps Firebase verified user to MongoDB custom JWT
+router.post('/social', async (req, res) => {
+    const { email, name, avatar, firebaseUid } = req.body;
+
+    if (!email || !firebaseUid) {
+        return res.status(400).json({ message: 'Invalid social login payload' });
+    }
+
+    try {
+        let user = await User.findOne({ email });
+        if (!user) {
+            // Create user without password for OAuth mapped from Firebase
+            user = await User.create({ name, email, avatar: avatar || '' });
+        }
+        res.json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar,
+            token: generateToken(user._id),
+        });
+    } catch (error) {
+        console.error('Social Login Error:', error);
+        res.status(500).json({ message: 'Internal server error during social login' });
     }
 });
 
