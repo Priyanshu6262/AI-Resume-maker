@@ -55,7 +55,7 @@ const Navbar = () => {
                 {/* Logo / Home Link */}
                 <div className="flex items-center gap-8">
                     <Link to="/" className="text-2xl font-extrabold text-slate-900 hover:opacity-80 z-10 flex items-center">
-                        resume<span className="text-green-600">.</span>
+                        resume<span className="text-green-600">.ai</span>
                     </Link>
 
                     {/* Navigation Links (Visible on Landing Page OR if user is logged in) */}

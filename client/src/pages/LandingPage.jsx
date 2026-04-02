@@ -7,11 +7,7 @@ const LandingPage = () => {
 
     return (
         <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-green-200">
-            {/* Top Banner */}
-            <div className="bg-green-50/80 border-b border-green-100 py-2 text-center text-sm font-medium text-green-800 flex justify-center items-center gap-2">
-                <span className="bg-green-600 text-white text-xs px-2 py-0.5 rounded-full font-bold tracking-wide">New</span>
-                AI Feature Added
-            </div>
+
 
             {/* Hero Section */}
             <section className="relative pt-24 pb-20 overflow-hidden">
