@@ -20,18 +20,22 @@ router.post('/', async (req, res) => {
 
         let prompt = "";
         if (type === 'summary') {
-            prompt = `Improve the following professional summary for a resume. Make it impactful, concise, and professional. You MUST keep the output UNDER 40 words total. Do NOT write a long paragraph. Return ONLY the improved text, with no quotes or additional formatting:\n\n${text}`;
+            prompt = `Improve the following professional summary for a resume. Make it impactful, concise, and professional. You MUST keep the output UNDER 40 words total. Do NOT write a long paragraph. Return ONLY the improved text, with no quotes or additional formatting. CRITICAL: Do NOT use any line breaks, newlines, or hard wraps. Write as one continuous string:\n\n${text}`;
         } else if (type === 'experience') {
-            prompt = `Improve the following job experience description for a resume. Focus on action verbs, quantifiable achievements, and clear phrasing. Return ONLY the improved text, no quotes or additional formatting:\n\n${text}`;
+            prompt = `Improve the following job experience description for a resume. Focus on action verbs, quantifiable achievements, and clear phrasing. Return ONLY the improved text, no quotes or additional formatting. CRITICAL: Do NOT hard-wrap sentences. Only use newlines for distinct bullet points:\n\n${text}`;
         } else if (type === 'project') {
-            prompt = `Improve the following project description for a resume. Make it highlight technical skills, impact, and problem-solving. Return ONLY the improved text, no quotes or additional formatting:\n\n${text}`;
+            prompt = `Improve the following project description for a resume. Make it highlight technical skills, impact, and problem-solving. Return ONLY the improved text, no quotes or additional formatting. CRITICAL: Do NOT hard-wrap sentences. Only use newlines for distinct bullet points:\n\n${text}`;
         } else {
             prompt = `Improve the following text for a resume to make it more professional. Return ONLY the improved text:\n\n${text}`;
         }
 
         const result = await model.generateContent(prompt);
         const response = await result.response;
-        const enhancedText = response.text().trim();
+        let enhancedText = response.text().trim();
+
+        if (type === 'summary') {
+            enhancedText = enhancedText.replace(/\n+/g, ' ').replace(/\s{2,}/g, ' ');
+        }
 
         res.json({ enhancedText });
 

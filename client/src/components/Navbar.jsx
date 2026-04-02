@@ -1,7 +1,8 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useNavbar } from '../context/NavbarContext';
 import { useAuth } from '../context/AuthContext';
-import { User, LogOut, FileText, ChevronDown, Edit, Save, Heart, Upload } from 'lucide-react';
+import { User, LogOut, FileText, ChevronDown, Edit, Save, Heart, Upload, Bold, Italic, Underline, Palette } from 'lucide-react';
+import { globalActiveQuill } from './RichTextEditor';
 import toast from 'react-hot-toast';
 import { useState, useRef, useEffect } from 'react';
 
@@ -11,9 +12,28 @@ const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [activeFormats, setActiveFormats] = useState({});
     const dropdownRef = useRef(null);
 
     const isLandingPage = location.pathname === '/';
+
+    useEffect(() => {
+        let interval;
+        if (title === 'Resume Editor') {
+            interval = setInterval(() => {
+                if (globalActiveQuill) {
+                    if (globalActiveQuill.hasFocus()) {
+                        const fmt = globalActiveQuill.getFormat();
+                        setActiveFormats(prev => JSON.stringify(prev) === JSON.stringify(fmt) ? prev : fmt);
+                    } else {
+                        // Clear visually if the editor loses focus completely
+                        setActiveFormats(prev => Object.keys(prev).length === 0 ? prev : {});
+                    }
+                }
+            }, 200);
+        }
+        return () => clearInterval(interval);
+    }, [title]);
 
     const handleLogout = () => {
         logout();
@@ -69,28 +89,68 @@ const Navbar = () => {
                     )}
 
                     {/* Global Toolbar Container */}
-                    <div id="global-quill-toolbar" className={title === 'Resume Editor' ? "ql-toolbar ql-snow flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-lg px-2 py-1 ml-4 shadow-sm" : "hidden"}>
-                        <select className="ql-font" defaultValue="sans-serif">
-                            <option value="sans-serif"></option>
-                            <option value="serif"></option>
-                            <option value="monospace"></option>
-                        </select>
-                        <select className="ql-size" defaultValue="14px">
-                            <option value="10px"></option>
-                            <option value="12px"></option>
-                            <option value="14px"></option>
-                            <option value="16px"></option>
-                            <option value="18px"></option>
-                            <option value="20px"></option>
-                            <option value="24px"></option>
-                            <option value="30px"></option>
-                        </select>
+                    <div 
+                        id="custom-global-toolbar" 
+                        onMouseDown={(e) => e.preventDefault()}
+                        className={title === 'Resume Editor' ? "flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-lg px-2 py-1 ml-4 shadow-sm" : "hidden"}
+                    >
+                        {/* Native color picker masked behind an icon */}
+                        <label className={`relative flex items-center justify-center p-1.5 rounded cursor-pointer group transition-colors ${activeFormats.color ? 'bg-green-100 text-green-700' : 'hover:bg-slate-200 text-slate-600 hover:text-green-600'}`} title="Text Color">
+                            <Palette size={16} className={activeFormats.color ? "" : "group-hover:text-green-600"} />
+                            <input 
+                                type="color" 
+                                className="absolute opacity-0 w-0 h-0"
+                                onChange={(e) => {
+                                    if (globalActiveQuill) {
+                                        globalActiveQuill.format('color', e.target.value);
+                                        setActiveFormats(globalActiveQuill.getFormat());
+                                    }
+                                }}
+                            />
+                        </label>
                         <div className="w-px h-5 bg-gray-300 mx-1"></div>
-                        <select className="ql-color"></select>
-                        <div className="w-px h-5 bg-gray-300 mx-1"></div>
-                        <button className="ql-bold"></button>
-                        <button className="ql-italic"></button>
-                        <button className="ql-underline"></button>
+                        <button 
+                            type="button"
+                            title="Bold"
+                            onClick={() => {
+                                if (globalActiveQuill) {
+                                    const fmt = globalActiveQuill.getFormat();
+                                    globalActiveQuill.format('bold', !fmt['bold']);
+                                    setActiveFormats(globalActiveQuill.getFormat());
+                                }
+                            }} 
+                            className={`p-1.5 rounded transition-colors ${activeFormats.bold ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'hover:bg-slate-200 text-slate-600 hover:text-green-600'}`}
+                        >
+                            <Bold size={16} />
+                        </button>
+                        <button 
+                            type="button"
+                            title="Italic"
+                            onClick={() => {
+                                if (globalActiveQuill) {
+                                    const fmt = globalActiveQuill.getFormat();
+                                    globalActiveQuill.format('italic', !fmt['italic']);
+                                    setActiveFormats(globalActiveQuill.getFormat());
+                                }
+                            }} 
+                            className={`p-1.5 rounded transition-colors ${activeFormats.italic ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'hover:bg-slate-200 text-slate-600 hover:text-green-600'}`}
+                        >
+                            <Italic size={16} />
+                        </button>
+                        <button 
+                            type="button"
+                            title="Underline"
+                            onClick={() => {
+                                if (globalActiveQuill) {
+                                    const fmt = globalActiveQuill.getFormat();
+                                    globalActiveQuill.format('underline', !fmt['underline']);
+                                    setActiveFormats(globalActiveQuill.getFormat());
+                                }
+                            }} 
+                            className={`p-1.5 rounded transition-colors ${activeFormats.underline ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'hover:bg-slate-200 text-slate-600 hover:text-green-600'}`}
+                        >
+                            <Underline size={16} />
+                        </button>
                     </div>
                 </div>
 

@@ -1,10 +1,11 @@
-/* Customized Quill Editor styles to match the dark theme */
+/* Customized Quill Editor styles to match the navbar theme */
 
 /* Headless container (just the input area) */
 .quill-custom-headless .ql-container.ql-snow {
     background-color: transparent !important;
     border: none !important; /* we handle border on the wrapper div in React */
     color: #000000; /* black text */
+    height: auto !important;
     min-height: 120px;
     font-size: 14px;
 }
@@ -12,6 +13,8 @@
 .quill-custom-headless .ql-editor {
     min-height: 120px;
     padding: 10px;
+    height: auto !important;
+    overflow-y: visible !important; 
 }
 
 .quill-custom-headless .ql-editor.ql-blank::before {
@@ -23,7 +26,7 @@
 
 /* Global Navbar Toolbar Styles */
 #global-quill-toolbar.ql-toolbar.ql-snow {
-    border: 1px solid #334155 !important;
+    border: 1px solid #e2e8f0 !important;
     font-family: inherit;
     display: flex;
     align-items: center;
@@ -47,24 +50,24 @@
 }
 
 #global-quill-toolbar .ql-stroke {
-    stroke: #cbd5e1 !important; /* slate-300 */
+    stroke: #475569 !important; /* slate-600 */
 }
 
 #global-quill-toolbar .ql-fill, 
 #global-quill-toolbar .ql-stroke.ql-fill {
-    fill: #cbd5e1 !important; /* slate-300 */
+    fill: #475569 !important; /* slate-600 */
 }
 
 #global-quill-toolbar .ql-picker-label {
-    color: #cbd5e1 !important;
+    color: #475569 !important;
     border: none !important;
 }
 
 #global-quill-toolbar .ql-picker-options {
-    background-color: #1e293b !important;
-    border-color: #475569 !important;
-    color: #f8fafc !important;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    background-color: #ffffff !important;
+    border-color: #e2e8f0 !important;
+    color: #0f172a !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     border-radius: 6px;
     padding: 4px;
     margin-top: 4px;
@@ -76,27 +79,27 @@
 }
 
 #global-quill-toolbar .ql-picker-item:hover {
-    background-color: #334155;
+    background-color: #f1f5f9;
 }
 
 #global-quill-toolbar .ql-picker-item:hover,
 #global-quill-toolbar .ql-picker-item.ql-selected {
-    color: #a855f7 !important;
+    color: #16a34a !important; /* green-600 */
 }
 
 #global-quill-toolbar button:hover .ql-stroke,
 #global-quill-toolbar button.ql-active .ql-stroke,
 #global-quill-toolbar .ql-picker-label:hover .ql-stroke,
 #global-quill-toolbar .ql-picker-label.ql-active .ql-stroke {
-    stroke: #a855f7 !important; /* purple-500 */
+    stroke: #16a34a !important; /* green-600 */
 }
 
 #global-quill-toolbar button:hover .ql-fill,
 #global-quill-toolbar button.ql-active .ql-fill {
-    fill: #a855f7 !important;
+    fill: #16a34a !important;
 }
 
 #global-quill-toolbar .ql-picker-label:hover,
 #global-quill-toolbar .ql-picker-label.ql-active {
-    color: #a855f7 !important;
+    color: #16a34a !important;
 }
