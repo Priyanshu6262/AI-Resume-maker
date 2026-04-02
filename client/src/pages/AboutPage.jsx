@@ -3,10 +3,10 @@ import { CheckCircle, Zap, Shield, Sparkles, TrendingUp, Target } from 'lucide-r
 
 const AboutPage = () => {
     return (
-        <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-green-200 pt-16">
+        <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-green-200 pt-4">
             
             {/* Section 1: About Resume.ai */}
-            <section className="py-24 bg-white border-b border-slate-100">
+            <section className="pt-12 pb-24 bg-white border-b border-slate-100">
                 <div className="container mx-auto px-6">
                     <div className="flex flex-col lg:flex-row items-center gap-16">
                         <div className="w-full lg:w-1/2">

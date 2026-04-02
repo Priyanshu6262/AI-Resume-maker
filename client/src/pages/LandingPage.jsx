@@ -10,7 +10,7 @@ const LandingPage = () => {
 
 
             {/* Hero Section */}
-            <section className="relative pt-24 pb-20 overflow-hidden">
+            <section className="relative pt-12 pb-20 overflow-hidden">
                 <div className="container mx-auto px-6 text-center">
                     <div className="flex justify-center items-center gap-3 mb-8">
                         <div className="flex -space-x-3">
