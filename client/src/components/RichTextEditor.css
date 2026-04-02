@@ -4,7 +4,7 @@
 .quill-custom-headless .ql-container.ql-snow {
     background-color: transparent !important;
     border: none !important; /* we handle border on the wrapper div in React */
-    color: #f8fafc; /* slate-50 */
+    color: #000000; /* black text */
     min-height: 120px;
     font-size: 14px;
 }

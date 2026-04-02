@@ -322,15 +322,7 @@ const Editor = () => {
                 </button>
                 <div className="h-6 w-px bg-slate-300 mx-1"></div>
                 
-                <button
-                    onClick={() => window.location.href = '/templates'}
-                    title="Change Template"
-                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-600 hover:text-white hover:bg-slate-800 rounded-lg"
-                >
-                    <FileText size={18} />
-                    <span className="hidden sm:inline">Templates</span>
-                </button>
-                <div className="h-6 w-px bg-slate-300 mx-1"></div>
+
                 <button onClick={handleSave} title="Save Resume" className="p-2 text-slate-500 hover:text-slate-900 rounded-full hover:bg-slate-200">
                     <Save size={20} />
                 </button>
