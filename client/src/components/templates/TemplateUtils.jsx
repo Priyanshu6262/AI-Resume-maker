@@ -48,66 +48,13 @@ export const getLinearBlocks = (TemplateComponents, data) => {
 };
 
 export const PagedRenderer = ({ blocks, data }) => {
-    const [pages, setPages] = useState([]);
-    const measureRef = useRef(null);
-
-    useLayoutEffect(() => {
-        if (!measureRef.current) return;
-
-        const blockNodes = Array.from(measureRef.current.children);
-        const calculatedPages = [];
-        let currentPageBlocks = [];
-        let currentHeight = 0;
-        // 60px padding top/bottom accounted for in PAGE_HEIGHT or here. 
-        // The container has p-10 (2.5rem = 40px). 
-        // Total available height ~ 1123px - 80px = 1043px.
-        const MAX_HEIGHT = 1040;
-
-        blockNodes.forEach((node, index) => {
-            const height = node.offsetHeight;
-            if (currentHeight + height > MAX_HEIGHT && currentPageBlocks.length > 0) {
-                calculatedPages.push(currentPageBlocks);
-                currentPageBlocks = [blocks[index]];
-                currentHeight = height;
-            } else {
-                currentPageBlocks.push(blocks[index]);
-                currentHeight += height;
-            }
-        });
-
-        if (currentPageBlocks.length > 0) calculatedPages.push(currentPageBlocks);
-        setPages(calculatedPages);
-
-    }, [blocks, data]); // Re-calculate when data changes
-
     return (
-        <>
-            {/* Hidden Measurement Container */}
-            <div ref={measureRef} className="absolute top-0 left-0 w-[210mm] opacity-0 pointer-events-none z-[-1] bg-white p-10 font-serif">
-                {blocks.map(b => <div key={b.id}>{b.component}</div>)}
-            </div>
-
-            {/* Visible Pages */}
-            <div className="flex flex-col gap-8">
-                {pages.map((pageBlocks, pageIndex) => (
-                    // Each page is an A4 sheet
-                    <div key={pageIndex} className="resume-page bg-white w-[210mm] min-h-[297mm] p-10 font-serif shadow-lg relative">
-                        {pageBlocks.map(b => (
-                            <div key={b.id}>{b.component}</div>
-                        ))}
-                        {/* Page Number */}
-                        <div className="absolute bottom-2 right-4 text-xs text-slate-400">
-                            Page {pageIndex + 1}
-                        </div>
-                    </div>
+        <div className="flex flex-col gap-8">
+            <div className="resume-page bg-white w-full min-h-full p-10 font-serif relative">
+                {blocks.map(b => (
+                    <div key={b.id}>{b.component}</div>
                 ))}
-                {/* If pages are calculating or empty, show loading or empty state */}
-                {pages.length === 0 && (
-                    <div className="bg-white w-[210mm] min-h-[297mm] p-10 font-serif shadow-lg flex items-center justify-center text-slate-400">
-                        Preparing layout...
-                    </div>
-                )}
             </div>
-        </>
+        </div>
     );
 };

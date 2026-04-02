@@ -107,76 +107,49 @@ const Editor = () => {
             document.body.appendChild(clone);
 
             // Find all pages within the clone
-            const pages = clone.querySelectorAll('.resume-page');
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const pdfWidth = pdf.internal.pageSize.getWidth(); // 210mm
+            // Find the page container
+            const page = clone.querySelector('.resume-page') || clone;
 
-            // Function to add links for a specific page element
-            const addLinksToPdf = (pageElement, pdfDoc, scaleFactor) => {
-                const links = pageElement.querySelectorAll('a');
-                const pageRect = pageElement.getBoundingClientRect();
+            const canvas = await html2canvas(page, {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                windowWidth: page.scrollWidth,
+                windowHeight: page.scrollHeight
+            });
 
-                links.forEach(link => {
-                    const linkRect = link.getBoundingClientRect();
+            const imgData = canvas.toDataURL('image/png');
+            const pdfWidth = 210; // Fixed A4 width in mm
+            // Keep a minimum of standard A4 height, but let it grow endlessly if content needs it
+            const pdfHeight = Math.max(297, (canvas.height * pdfWidth) / canvas.width);
 
-                    // Calculate relative position and size in PDF units
-                    const x = (linkRect.left - pageRect.left) * scaleFactor;
-                    const y = (linkRect.top - pageRect.top) * scaleFactor;
-                    const w = linkRect.width * scaleFactor;
-                    const h = linkRect.height * scaleFactor;
+            // Create a dynamic PDF that fits the entire infinitely scrolling page
+            const pdf = new jsPDF({
+                orientation: 'p',
+                unit: 'mm',
+                format: [pdfWidth, pdfHeight]
+            });
 
-                    if (link.href) {
-                        pdfDoc.link(x, y, w, h, { url: link.href });
-                    }
-                });
-            };
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
 
-            if (pages.length > 0) {
-                // Multi-page logic
-                for (let i = 0; i < pages.length; i++) {
-                    const page = pages[i];
-                    if (i > 0) pdf.addPage();
+            // Add links
+            const scaleFactor = pdfWidth / page.offsetWidth;
+            const links = page.querySelectorAll('a');
+            const pageRect = page.getBoundingClientRect();
 
-                    const canvas = await html2canvas(page, {
-                        scale: 2,
-                        useCORS: true,
-                        logging: false,
-                        allowTaint: true,
-                        backgroundColor: '#ffffff',
-                        windowWidth: page.scrollWidth,
-                        windowHeight: page.scrollHeight
-                    });
+            links.forEach(link => {
+                const linkRect = link.getBoundingClientRect();
+                const x = (linkRect.left - pageRect.left) * scaleFactor;
+                const y = (linkRect.top - pageRect.top) * scaleFactor;
+                const w = linkRect.width * scaleFactor;
+                const h = linkRect.height * scaleFactor;
 
-                    const imgData = canvas.toDataURL('image/png');
-                    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-                    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-
-                    // Calculate scale factor: 210mm / page width in pixels
-                    // note: page.scrollWidth might be slightly different than bounding client rect due to rounding
-                    // Safer to use the ratio of PDF width to Canvas width (scaled down by the html2canvas scale)
-                    // OR just pdfWidth / page.offsetWidth
-                    const scaleFactor = pdfWidth / page.offsetWidth;
-                    addLinksToPdf(page, pdf, scaleFactor);
+                if (link.href) {
+                    pdf.link(x, y, w, h, { url: link.href });
                 }
-            } else {
-                // Fallback for single page / non-paginated templates (like Modern)
-                const canvas = await html2canvas(clone, {
-                    scale: 2,
-                    useCORS: true,
-                    logging: false,
-                    allowTaint: true,
-                    backgroundColor: '#ffffff',
-                    windowWidth: clone.scrollWidth,
-                    windowHeight: clone.scrollHeight
-                });
-
-                const imgData = canvas.toDataURL('image/png');
-                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-
-                const scaleFactor = pdfWidth / clone.offsetWidth;
-                addLinksToPdf(clone, pdf, scaleFactor);
-            }
+            });
 
             // Remove clone
             document.body.removeChild(clone);
@@ -347,9 +320,9 @@ const Editor = () => {
             </div>
 
             {/* Right Side: Preview */}
-            <div className="w-1/2 bg-slate-200/50 overflow-y-auto overflow-x-hidden p-4 flex justify-center items-start relative scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-200/50">
+            <div className="w-1/2 bg-slate-200/50 overflow-y-auto overflow-x-hidden p-8 flex justify-center items-start relative scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-slate-200/50">
                 {/* Visual indicator for A4 sheet */}
-                <div className="relative shadow-2xl transition-transform origin-top transform scale-[0.65] my-4">
+                <div className="relative shadow-2xl transition-transform origin-top transform scale-[0.80] my-4">
                     {/* The preview container itself must remain white to represent paper */}
                     <div className="w-[210mm] min-h-[297mm]" ref={previewRef}>
                         <ResumePreview data={resumeData} templateId={templateId} />
