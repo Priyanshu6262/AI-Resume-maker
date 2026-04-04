@@ -24,8 +24,16 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
     };
 
+    const setWishlist = (newWishlist) => {
+        if (user) {
+            const updatedUser = { ...user, wishlist: newWishlist };
+            setUser(updatedUser);
+            localStorage.setItem('userInfo', JSON.stringify(updatedUser));
+        }
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, logout, loading, setWishlist }}>
             {children}
         </AuthContext.Provider>
     );

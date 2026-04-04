@@ -2,18 +2,23 @@ import { useNavigate } from 'react-router-dom';
 import { Heart, PlusCircle, Trash2 } from 'lucide-react';
 import { templates } from '../utils/templatesData';
 import { useWishlist } from '../hooks/useWishlist';
+import { useAuth } from '../context/AuthContext';
 
 const Wishlist = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
     const { wishlist, removeFromWishlist } = useWishlist();
 
     const wishlistedTemplates = templates.filter(t => wishlist.includes(t.id));
 
     return (
         <div className="min-h-screen bg-slate-50 p-8">
-            <h2 className="text-4xl font-extrabold mb-12 text-center text-slate-900">
-                My Template Wishlist
-            </h2>
+            <div className="text-center mb-12">
+                <h2 className="text-4xl font-extrabold text-slate-900 mb-2">
+                    My Private Wishlist
+                </h2>
+                <p className="text-slate-500">Only you can see these templates.</p>
+            </div>
 
             {wishlistedTemplates.length === 0 ? (
                 <div className="flex flex-col items-center justify-center text-slate-600 pt-10">

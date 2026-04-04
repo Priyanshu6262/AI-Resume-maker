@@ -45,6 +45,7 @@ router.post('/register', async (req, res) => {
                 name: user.name,
                 email: user.email,
                 avatar: user.avatar,
+                wishlist: user.wishlist || [],
                 token: generateToken(user._id),
             });
         } else {
@@ -68,6 +69,7 @@ router.post('/login', async (req, res) => {
                 name: user.name,
                 email: user.email,
                 avatar: user.avatar,
+                wishlist: user.wishlist || [],
                 token: generateToken(user._id),
             });
         } else {
@@ -97,6 +99,7 @@ router.post('/social', async (req, res) => {
             name: user.name,
             email: user.email,
             avatar: user.avatar,
+            wishlist: user.wishlist || [],
             token: generateToken(user._id),
         });
     } catch (error) {
@@ -128,8 +131,31 @@ router.put('/profile', protect, async (req, res) => {
             name: updatedUser.name,
             email: updatedUser.email,
             avatar: updatedUser.avatar,
+            wishlist: updatedUser.wishlist || [],
             token: generateToken(updatedUser._id),
         });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+});
+
+router.post('/wishlist/toggle', protect, async (req, res) => {
+    const { templateId } = req.body;
+    try {
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const index = user.wishlist.indexOf(templateId);
+        if (index > -1) {
+            user.wishlist.splice(index, 1);
+        } else {
+            user.wishlist.push(templateId);
+        }
+
+        await user.save();
+        res.json({ wishlist: user.wishlist });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
