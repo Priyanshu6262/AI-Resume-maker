@@ -4,15 +4,14 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const userInfo = localStorage.getItem('userInfo');
         if (userInfo) {
             setUser(JSON.parse(userInfo));
-        } else {
-            // Optional: for testing during development if no auth exists
-            // setUser({ name: 'Guest User', email: 'guest@example.com' });
         }
+        setLoading(false);
     }, []);
 
     const login = (userData) => {
@@ -26,7 +25,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout }}>
+        <AuthContext.Provider value={{ user, login, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );
