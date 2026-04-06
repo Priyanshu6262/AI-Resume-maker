@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
@@ -22,16 +22,9 @@ export const useWishlist = () => {
         }
 
         try {
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${user.token}`,
-                },
-            };
-
-            const { data } = await axios.post(
-                'http://localhost:5000/api/auth/wishlist/toggle',
-                { templateId },
-                config
+            const { data } = await api.post(
+                '/api/auth/wishlist/toggle',
+                { templateId }
             );
 
             setWishlist(data.wishlist);

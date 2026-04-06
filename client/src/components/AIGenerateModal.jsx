@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { X, Sparkles, AlertCircle } from 'lucide-react';
-import axios from 'axios';
+import api from '../utils/api';
 import toast from 'react-hot-toast';
 
 const AIGenerateModal = ({ isOpen, onClose, onGenerate }) => {
@@ -19,7 +19,7 @@ const AIGenerateModal = ({ isOpen, onClose, onGenerate }) => {
 
         try {
             setLoading(true);
-            const { data } = await axios.post('http://localhost:5000/api/enhance/generate-from-jd', {
+            const { data } = await api.post('/api/enhance/generate-from-jd', {
                 jobDescription,
                 requiredSkills,
                 projectDetails

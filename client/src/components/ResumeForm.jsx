@@ -1,6 +1,6 @@
 import { Plus, Trash2, Wand2, Loader2, ChevronRight, ChevronLeft } from 'lucide-react';
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import toast from 'react-hot-toast';
 import RichTextEditor from './RichTextEditor';
 
@@ -53,7 +53,7 @@ const ResumeForm = ({ data, updateData }) => {
 
         try {
             setEnhancingField(trackingId);
-            const response = await axios.post('http://localhost:5000/api/enhance', { text, type });
+            const response = await api.post('/api/enhance', { text, type });
             callback(response.data.enhancedText);
             toast.success('Text enhanced with AI!');
         } catch (error) {

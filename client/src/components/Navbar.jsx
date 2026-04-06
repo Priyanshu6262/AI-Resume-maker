@@ -180,12 +180,22 @@ const Navbar = () => {
                                 className="flex items-center gap-2 focus:outline-none p-2 rounded-lg hover:bg-gray-100 text-slate-800"
                             >
                                 {user.avatar ? (
-                                    <img src={user.avatar} alt="Profile" className="w-8 h-8 rounded-full object-cover border border-gray-200 shadow-sm" />
-                                ) : (
-                                    <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center text-sm font-bold shadow-md text-white">
-                                        {getInitials(user.name)}
-                                    </div>
-                                )}
+                                    <img
+                                        src={user.avatar}
+                                        alt="Profile"
+                                        className="w-8 h-8 rounded-full object-cover border border-gray-200 shadow-sm"
+                                        onError={(e) => {
+                                            e.target.style.display = 'none';
+                                            e.target.nextSibling.style.display = 'flex';
+                                        }}
+                                    />
+                                ) : null}
+                                <div
+                                    className="w-8 h-8 rounded-full bg-green-600 items-center justify-center text-sm font-bold shadow-md text-white"
+                                    style={{ display: user.avatar ? 'none' : 'flex' }}
+                                >
+                                    {getInitials(user.name)}
+                                </div>
                                 <span className="text-sm font-medium hidden sm:block max-w-[100px] truncate text-slate-800">
                                     {user.name}
                                 </span>
@@ -195,9 +205,28 @@ const Navbar = () => {
                             {/* Dropdown Menu */}
                             {isDropdownOpen && (
                                 <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-xl shadow-2xl py-2 text-slate-800 border border-gray-100">
-                                    <div className="px-4 py-2 border-b border-gray-100 mb-2">
-                                        <p className="text-xs font-bold text-gray-500 uppercase tracking-wider">Account</p>
-                                        <p className="text-sm font-medium truncate">{user.email}</p>
+                                    <div className="px-4 py-3 border-b border-gray-100 mb-2 flex items-center gap-3">
+                                        {/* Mini avatar in dropdown header */}
+                                        {user.avatar ? (
+                                            <img src={user.avatar} alt="" className="w-10 h-10 rounded-full object-cover border border-gray-200 shrink-0" />
+                                        ) : (
+                                            <div className="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-base font-bold text-white shrink-0">
+                                                {getInitials(user.name)}
+                                            </div>
+                                        )}
+                                        <div className="min-w-0">
+                                            <p className="text-sm font-semibold truncate">{user.name}</p>
+                                            <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                                            {!user.avatar && (
+                                                <Link
+                                                    to="/profile"
+                                                    onClick={() => setIsDropdownOpen(false)}
+                                                    className="text-[11px] text-green-600 hover:text-green-700 font-medium flex items-center gap-0.5 mt-0.5"
+                                                >
+                                                    <Upload size={10} /> Add profile photo
+                                                </Link>
+                                            )}
+                                        </div>
                                     </div>
 
                                     {/* Menu Items */}

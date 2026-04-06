@@ -5,6 +5,10 @@ const User = require('../models/User');
 const router = express.Router();
 
 const generateToken = (id) => {
+    if (!process.env.JWT_SECRET) {
+        console.error("CRITICAL ERROR: JWT_SECRET is not defined in environment variables.");
+        throw new Error("JWT_SECRET is missing. Please check server environment variables.");
+    }
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 };
 
@@ -76,7 +80,12 @@ router.post('/login', async (req, res) => {
             res.status(401).json({ message: 'Invalid email or password' });
         }
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error: error.message });
+        console.error("Login Error:", error);
+        res.status(500).json({ 
+            message: 'Server error during login', 
+            error: error.message,
+            stack: process.env.NODE_ENV === 'production' ? null : error.stack 
+        });
     }
 });
 

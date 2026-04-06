@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../utils/api';
 import { Edit, Download as DownloadIcon, PlusCircle, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import html2canvas from 'html2canvas';
@@ -27,13 +27,7 @@ const SavedResumes = () => {
                 return;
             }
 
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${userInfo.token}`,
-                },
-            };
-
-            const { data } = await axios.get('http://localhost:5000/api/resumes', config);
+            const { data } = await api.get('/api/resumes');
             
             if (Array.isArray(data)) {
                 setResumes(data);
@@ -57,9 +51,7 @@ const SavedResumes = () => {
         if (!window.confirm("Are you sure you want to permanently delete this resume?")) return;
         
         try {
-            const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-            const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-            await axios.delete(`http://localhost:5000/api/resumes/${id}`, config);
+            await api.delete(`/api/resumes/${id}`);
             setResumes(resumes.filter(r => r._id !== id));
             toast.success('Resume deleted successfully');
         } catch (error) {
@@ -98,23 +90,70 @@ const SavedResumes = () => {
                     });
                 };
 
+                // html2canvas v1.x cannot parse oklch() colors from TailwindCSS v4.
+                // Modern Chrome also returns oklch from getComputedStyle, so we cannot
+                // copy computed values. Instead we use a OffscreenCanvas / 2D canvas
+                // to resolve any CSS color string to an rgb value — the canvas API
+                // accepts all modern color functions and always fills with rgb pixels.
+                const colorResolverCanvas = document.createElement('canvas');
+                colorResolverCanvas.width = colorResolverCanvas.height = 1;
+                const colorResolverCtx = colorResolverCanvas.getContext('2d');
+
+                const resolveColor = (colorStr) => {
+                    try {
+                        colorResolverCtx.clearRect(0, 0, 1, 1);
+                        colorResolverCtx.fillStyle = colorStr;
+                        colorResolverCtx.fillRect(0, 0, 1, 1);
+                        const [r, g, b, a] = colorResolverCtx.getImageData(0, 0, 1, 1).data;
+                        return a === 0 ? 'transparent' : `rgb(${r},${g},${b})`;
+                    } catch {
+                        return 'rgb(0,0,0)';
+                    }
+                };
+
+                // Replace every oklch(...) occurrence inside CSS text with its resolved rgb
+                const patchStyleText = (text) =>
+                    text.replace(/oklch\([^)]+\)/g, (match) => resolveColor(match));
+
+                const getHtml2CanvasOptions = () => ({
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff',
+                    onclone: (clonedDoc) => {
+                        // 1. Patch all <style> tags — this is where TailwindCSS v4 defines
+                        //    its oklch custom properties (--color-*, --tw-ring-color, etc.)
+                        clonedDoc.querySelectorAll('style').forEach((tag) => {
+                            tag.textContent = patchStyleText(tag.textContent);
+                        });
+
+                        // 2. Patch any remaining oklch in inline styles on individual elements
+                        Array.from(clonedDoc.getElementsByTagName('*')).forEach((el) => {
+                            if (el.style.cssText.includes('oklch')) {
+                                el.style.cssText = patchStyleText(el.style.cssText);
+                            }
+                        });
+                    },
+                });
+
                 if (pages.length > 0) {
                     for (let i = 0; i < pages.length; i++) {
                         const page = pages[i];
                         if (i > 0) pdf.addPage();
-                        const canvas = await html2canvas(page, { scale: 2, useCORS: true, logging: false });
-                        const imgData = canvas.toDataURL('image/png');
+                        const canvas = await html2canvas(page, getHtml2CanvasOptions());
+                        const imgData = canvas.toDataURL('image/jpeg', 0.82);
                         const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-                        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
                         addLinksToPdf(page, pdf, pdfWidth / page.offsetWidth);
                     }
                 } else {
-                    const canvas = await html2canvas(element, { scale: 2, useCORS: true, logging: false });
-                    const imgData = canvas.toDataURL('image/png');
+                    const canvas = await html2canvas(element, getHtml2CanvasOptions());
+                    const imgData = canvas.toDataURL('image/jpeg', 0.82);
                     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-                    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
                     addLinksToPdf(element, pdf, pdfWidth / element.offsetWidth);
                 }
+
 
                 const filename = downloadingResume.personalInfo?.fullName 
                     ? `${downloadingResume.personalInfo.fullName.replace(/\s+/g, '_')}_Resume.pdf` 

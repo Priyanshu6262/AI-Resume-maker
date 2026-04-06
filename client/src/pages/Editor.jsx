@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Save, Download, FileText, Upload, Sparkles } from 'lucide-react';
-import axios from 'axios';
+import api from '../utils/api';
 import toast from 'react-hot-toast';
 
 import ResumePreview from '../components/ResumePreview';
@@ -37,8 +37,7 @@ const Editor = () => {
                     const userInfo = JSON.parse(localStorage.getItem('userInfo'));
                     if (!userInfo || !userInfo.token) return;
 
-                    const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-                    const { data } = await axios.get(`http://localhost:5000/api/resumes/${resumeId}`, config);
+                    const { data } = await api.get(`/api/resumes/${resumeId}`);
                     
                     if (data) {
                         setResumeData({
@@ -110,6 +109,28 @@ const Editor = () => {
             // Find the page container
             const page = clone.querySelector('.resume-page') || clone;
 
+            // Canvas-based oklch resolver: the 2D canvas API accepts all modern CSS
+            // color functions and always stores pixels as rgb, making it the only
+            // reliable way to convert oklch → rgb independently of browser/version.
+            const colorResolverCanvas = document.createElement('canvas');
+            colorResolverCanvas.width = colorResolverCanvas.height = 1;
+            const colorResolverCtx = colorResolverCanvas.getContext('2d');
+
+            const resolveColor = (colorStr) => {
+                try {
+                    colorResolverCtx.clearRect(0, 0, 1, 1);
+                    colorResolverCtx.fillStyle = colorStr;
+                    colorResolverCtx.fillRect(0, 0, 1, 1);
+                    const [r, g, b, a] = colorResolverCtx.getImageData(0, 0, 1, 1).data;
+                    return a === 0 ? 'transparent' : `rgb(${r},${g},${b})`;
+                } catch {
+                    return 'rgb(0,0,0)';
+                }
+            };
+
+            const patchStyleText = (text) =>
+                text.replace(/oklch\([^)]+\)/g, (match) => resolveColor(match));
+
             const canvas = await html2canvas(page, {
                 scale: 2,
                 useCORS: true,
@@ -117,10 +138,22 @@ const Editor = () => {
                 allowTaint: true,
                 backgroundColor: '#ffffff',
                 windowWidth: page.scrollWidth,
-                windowHeight: page.scrollHeight
+                windowHeight: page.scrollHeight,
+                onclone: (clonedDoc) => {
+                    // Patch <style> tags first — this removes oklch from CSS custom properties
+                    clonedDoc.querySelectorAll('style').forEach((tag) => {
+                        tag.textContent = patchStyleText(tag.textContent);
+                    });
+                    // Patch remaining oklch in any inline styles
+                    Array.from(clonedDoc.getElementsByTagName('*')).forEach((el) => {
+                        if (el.style.cssText.includes('oklch')) {
+                            el.style.cssText = patchStyleText(el.style.cssText);
+                        }
+                    });
+                },
             });
 
-            const imgData = canvas.toDataURL('image/png');
+            const imgData = canvas.toDataURL('image/jpeg', 0.82);
             const pdfWidth = 210; // Fixed A4 width in mm
             // Keep a minimum of standard A4 height, but let it grow endlessly if content needs it
             const pdfHeight = Math.max(297, (canvas.height * pdfWidth) / canvas.width);
@@ -132,7 +165,7 @@ const Editor = () => {
                 format: [pdfWidth, pdfHeight]
             });
 
-            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
 
             // Add links
             const scaleFactor = pdfWidth / page.offsetWidth;
@@ -164,27 +197,10 @@ const Editor = () => {
 
     const handleSave = async () => {
         try {
-            const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-            if (!userInfo || !userInfo.token) {
-                toast.error('Please login to save');
-                return;
-            }
+            const payload = { templateId, ...resumeData };
+            if (resumeId) payload._id = resumeId;
 
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${userInfo.token}`,
-                },
-            };
-
-            const payload = {
-                templateId,
-                ...resumeData
-            };
-            if (resumeId) {
-                payload._id = resumeId;
-            }
-
-            const { data } = await axios.post('http://localhost:5000/api/resumes', payload, config);
+            const { data } = await api.post('/api/resumes', payload);
 
             toast.success('Resume saved successfully');
 
@@ -211,7 +227,7 @@ const Editor = () => {
                 const base64Data = e.target.result.split(',')[1];
                 toast.loading("Analyzing and enhancing resume...", { id: 'upload-toast' });
                 
-                const { data } = await axios.post('http://localhost:5000/api/enhance/upload', {
+                const { data } = await api.post('/api/enhance/upload', {
                     fileData: base64Data,
                     mimeType: file.type
                 });

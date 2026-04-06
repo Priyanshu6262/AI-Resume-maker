@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
@@ -27,10 +27,10 @@ const AuthPage = () => {
             return;
         }
 
-        const url = isLogin ? 'http://localhost:5000/api/auth/login' : 'http://localhost:5000/api/auth/register';
+        const url = isLogin ? '/api/auth/login' : '/api/auth/register';
 
         try {
-            const { data } = await axios.post(url, formData);
+            const { data } = await api.post(url, formData);
             login(data);
             toast.success(isLogin ? 'Login Successful' : 'Registration Successful');
             navigate('/templates');
@@ -46,7 +46,7 @@ const AuthPage = () => {
             const user = result.user;
             
             // Map Firebase user payload back to our custom MongoDB/JWT system backend
-            const { data } = await axios.post('http://localhost:5000/api/auth/social', {
+            const { data } = await api.post('/api/auth/social', {
                 email: user.email,
                 name: user.displayName,
                 avatar: user.photoURL,
@@ -59,7 +59,6 @@ const AuthPage = () => {
         } catch (error) {
             console.error(error);
             if (error.code === 'auth/popup-closed-by-user') return;
-            // Provide a graceful fallback error message for unconfigured Firebase placeholders
             if (error.code === 'auth/invalid-api-key') {
                 toast.error("Firebase API Key is missing. Check your firebase.js config!");
             } else {
