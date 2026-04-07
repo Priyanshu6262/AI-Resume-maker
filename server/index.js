@@ -10,7 +10,8 @@ const PORT = process.env.PORT || 5000;
 
 const allowedOrigins = [
     'http://localhost:5173',
-    'http://localhost:3000'
+    'http://localhost:3000',
+    'https://ai-resume-maker-created-by-priyansh.vercel.app'
 ];
 
 app.use(cors({
