@@ -189,13 +189,46 @@ const AuthPage = () => {
                 </div>
             </div>
 
-            {/* Right Column - Image */}
-            <div className="hidden lg:block lg:w-1/2 relative bg-slate-50">
+            {/* Right Column - Image & Branding */}
+            <div className="hidden lg:flex lg:w-1/2 relative bg-slate-100 items-center justify-center overflow-hidden">
                 <img 
                     src="/auth-bg.png" 
-                    alt="Abstract Professional Desk Layout" 
-                    className="absolute inset-0 w-full h-full object-cover"
+                    alt="Professional Workspace" 
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                 />
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-900/40 to-transparent"></div>
+                
+                {/* Glassmorphism Card */}
+                <div className="relative z-10 max-w-md p-8 m-12 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl transform transition-all duration-500 hover:translate-y-[-10px]">
+                    <div className="mb-6 inline-flex items-center justify-center p-3 bg-green-500/20 rounded-2xl border border-green-400/30">
+                        <svg className="w-8 h-8 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 className="text-3xl font-bold text-white mb-4 leading-tight">
+                        Craft Your Future with <span className="text-green-400">AI Precision</span>
+                    </h3>
+                    <p className="text-slate-100/90 text-lg leading-relaxed">
+                        Join thousands of professionals who have built winning resumes using our intelligent AI-powered platform.
+                    </p>
+                    
+                    {/* Social Proof/Stats */}
+                    <div className="mt-8 pt-8 border-t border-white/10 flex items-center gap-6">
+                        <div>
+                            <p className="text-2xl font-bold text-white">10k+</p>
+                            <p className="text-xs text-slate-300 uppercase tracking-wider font-semibold">Resumes Created</p>
+                        </div>
+                        <div className="w-px h-10 bg-white/10"></div>
+                        <div>
+                            <p className="text-2xl font-bold text-white">95%</p>
+                            <p className="text-xs text-slate-300 uppercase tracking-wider font-semibold">Success Rate</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Decorative Elements */}
+                <div className="absolute top-10 right-10 w-32 h-32 bg-green-500/10 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-10 left-10 w-48 h-48 bg-blue-500/10 rounded-full blur-3xl"></div>
             </div>
         </div>
     );

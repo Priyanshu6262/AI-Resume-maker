@@ -6,7 +6,7 @@ const Footer = () => {
             <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div className="mb-8 md:mb-0">
                     <div className="text-2xl font-extrabold text-slate-900 mb-4 flex items-center">
-                        resume<span className="text-green-600">.</span>
+                        resume<span className="text-green-600">.ai</span>
                     </div>
                     <p className="text-sm text-slate-500">
                         Build professional resumes in minutes with our AI-powered builder.
