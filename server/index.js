@@ -8,22 +8,8 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const allowedOrigins = [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'https://ai-resume-maker-created-by-priyansh.vercel.app',
-    'https://ai-resume-maker-beta-beryl.vercel.app',
-    /\.vercel\.app$/
-];
-
 app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.some(o => typeof o === 'string' ? o === origin : o.test(origin))) {
-            callback(null, true);
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+    origin: true,
     credentials: true
 }));
 
