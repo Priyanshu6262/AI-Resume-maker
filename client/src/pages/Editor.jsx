@@ -2,13 +2,8 @@ import { useState, useRef, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
-<<<<<<< HEAD
-import { Save, Download, FileText, Upload, Sparkles } from 'lucide-react';
-import api from '../utils/api';
-=======
 import { Save, Download, FileText, Sparkles } from 'lucide-react';
-import axios from 'axios';
->>>>>>> e0cd0a3 (Implement Job Fit Resume feature and fix PDF download issue)
+import api from '../utils/api';
 import toast from 'react-hot-toast';
 
 import ResumePreview from '../components/ResumePreview';
@@ -136,53 +131,6 @@ const Editor = () => {
             // Find the page container
             const page = clone.querySelector('.resume-page') || clone;
 
-<<<<<<< HEAD
-            // Canvas-based oklch resolver: the 2D canvas API accepts all modern CSS
-            // color functions and always stores pixels as rgb, making it the only
-            // reliable way to convert oklch → rgb independently of browser/version.
-            const colorResolverCanvas = document.createElement('canvas');
-            colorResolverCanvas.width = colorResolverCanvas.height = 1;
-            const colorResolverCtx = colorResolverCanvas.getContext('2d');
-
-            const resolveColor = (colorStr) => {
-                try {
-                    colorResolverCtx.clearRect(0, 0, 1, 1);
-                    colorResolverCtx.fillStyle = colorStr;
-                    colorResolverCtx.fillRect(0, 0, 1, 1);
-                    const [r, g, b, a] = colorResolverCtx.getImageData(0, 0, 1, 1).data;
-                    return a === 0 ? 'transparent' : `rgb(${r},${g},${b})`;
-                } catch {
-                    return 'rgb(0,0,0)';
-                }
-            };
-
-            const patchStyleText = (text) =>
-                text.replace(/oklch\([^)]+\)/g, (match) => resolveColor(match));
-
-            const canvas = await html2canvas(page, {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                allowTaint: true,
-                backgroundColor: '#ffffff',
-                windowWidth: page.scrollWidth,
-                windowHeight: page.scrollHeight,
-                onclone: (clonedDoc) => {
-                    // Patch <style> tags first — this removes oklch from CSS custom properties
-                    clonedDoc.querySelectorAll('style').forEach((tag) => {
-                        tag.textContent = patchStyleText(tag.textContent);
-                    });
-                    // Patch remaining oklch in any inline styles
-                    Array.from(clonedDoc.getElementsByTagName('*')).forEach((el) => {
-                        if (el.style.cssText.includes('oklch')) {
-                            el.style.cssText = patchStyleText(el.style.cssText);
-                        }
-                    });
-                },
-            });
-
-            const imgData = canvas.toDataURL('image/jpeg', 0.82);
-=======
             const imgData = await toPng(page, {
                 pixelRatio: 2,
                 backgroundColor: '#ffffff',
@@ -190,7 +138,6 @@ const Editor = () => {
                 height: page.scrollHeight
             });
 
->>>>>>> e0cd0a3 (Implement Job Fit Resume feature and fix PDF download issue)
             const pdfWidth = 210; // Fixed A4 width in mm
             // Keep a minimum of standard A4 height, but let it grow endlessly if content needs it
             const pdfHeight = Math.max(297, (page.scrollHeight * pdfWidth) / page.scrollWidth);
@@ -250,72 +197,7 @@ const Editor = () => {
     };
 
 
-<<<<<<< HEAD
-        if (file.size > 2 * 1024 * 1024) {
-            toast.error('File size exceeds 2MB limit.');
-            return;
-        }
 
-        const reader = new FileReader();
-        reader.onload = async (e) => {
-            try {
-                const base64Data = e.target.result.split(',')[1];
-                toast.loading("Analyzing and enhancing resume...", { id: 'upload-toast' });
-                
-                const { data } = await api.post('/api/enhance/upload', {
-                    fileData: base64Data,
-                    mimeType: file.type
-                });
-
-                setResumeData(prev => {
-                    const parsedSkills = data.skills && data.skills.length > 0 
-                        ? data.skills.map(skill => (typeof skill === 'object' ? skill.name : skill) || '')
-                        : prev.skills;
-
-                    const parsedProjects = data.projects && data.projects.length > 0
-                        ? data.projects.map(proj => ({
-                            title: proj.name || proj.title || '',
-                            description: proj.description || '',
-                            link: proj.link || '',
-                            sourceLink: proj.sourceLink || ''
-                        })) : prev.projects;
-
-                    const parsedEducation = data.education && data.education.length > 0
-                        ? data.education.map(edu => ({
-                            institution: edu.school || edu.institution || '',
-                            degree: edu.degree || '',
-                            year: (edu.startDate || '') + (edu.startDate && edu.endDate ? ' - ' : '') + (edu.endDate || edu.year || '')
-                        })) : prev.education;
-
-                    const parsedExperience = data.experience && data.experience.length > 0
-                        ? data.experience.map(exp => ({
-                            company: exp.company || '',
-                            role: exp.position || exp.role || '',
-                            duration: (exp.startDate || '') + (exp.startDate && exp.endDate ? ' - ' : '') + (exp.endDate || exp.duration || ''),
-                            description: exp.description || ''
-                        })) : prev.experience;
-
-                    return {
-                        personalInfo: { ...prev.personalInfo, ...(data.personalInfo || {}) },
-                        education: parsedEducation,
-                        experience: parsedExperience,
-                        skills: parsedSkills,
-                        projects: parsedProjects
-                    };
-                });
-
-                toast.success("Resume data automatically filled and enhanced!", { id: 'upload-toast' });
-            } catch (error) {
-                console.error(error);
-                toast.error(error.response?.data?.message || "Failed to parse resume.", { id: 'upload-toast' });
-            } finally {
-                if (fileInputRef.current) fileInputRef.current.value = '';
-            }
-        };
-        reader.readAsDataURL(file);
-    };
-=======
->>>>>>> e0cd0a3 (Implement Job Fit Resume feature and fix PDF download issue)
 
     // Update Navbar Title and Actions
     useEffect(() => {
