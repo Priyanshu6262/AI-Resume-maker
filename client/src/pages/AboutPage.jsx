@@ -122,8 +122,8 @@ const AboutPage = () => {
                                 <div className="flex gap-5">
                                     <div className="flex-shrink-0 w-14 h-14 bg-slate-900 text-white rounded-2xl flex items-center justify-center font-bold text-xl shadow-md transform -rotate-3">1</div>
                                     <div>
-                                        <h4 className="text-xl font-bold text-slate-900 mb-2">Upload or Start Fresh</h4>
-                                        <p className="text-slate-600 leading-relaxed">Upload your old resume to have it automatically parsed and mapped into our system, or start entirely from scratch using our rich text editor.</p>
+                                        <h4 className="text-xl font-bold text-slate-900 mb-2">Start Fresh</h4>
+                                        <p className="text-slate-600 leading-relaxed">Begin from scratch using our intuitive rich text editor. Fill in your details section by section and watch your resume come to life in real-time.</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-5">

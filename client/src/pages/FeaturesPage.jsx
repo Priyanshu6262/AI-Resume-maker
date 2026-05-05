@@ -1,5 +1,5 @@
 import React from 'react';
-import { Key, ShieldCheck, Download, UploadCloud, Edit3, LayoutTemplate, Cloud, Sparkles, Layout } from 'lucide-react';
+import { Key, ShieldCheck, Download, Edit3, LayoutTemplate, Cloud, Sparkles, Layout } from 'lucide-react';
 
 const FeaturesPage = () => {
     return (
@@ -36,16 +36,7 @@ const FeaturesPage = () => {
                             </p>
                         </div>
 
-                        {/* Feature 2 */}
-                        <div className="p-8 rounded-3xl bg-white border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 group">
-                            <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                <UploadCloud size={28} />
-                            </div>
-                            <h3 className="text-xl font-bold text-slate-900 mb-3">Smart Resume Upload</h3>
-                            <p className="text-slate-600 leading-relaxed">
-                                Don't want to type? Upload your old PDF or image resume. Our advanced OCR and AI parser will extract your data and automatically populate the builder fields.
-                            </p>
-                        </div>
+
 
                         {/* Feature 3 */}
                         <div className="p-8 rounded-3xl bg-white border border-slate-100 shadow-sm hover:shadow-lg transition-all duration-300 group">
