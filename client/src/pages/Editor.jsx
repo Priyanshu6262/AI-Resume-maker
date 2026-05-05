@@ -1,9 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import html2canvas from 'html2canvas';
+import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
+<<<<<<< HEAD
 import { Save, Download, FileText, Upload, Sparkles } from 'lucide-react';
 import api from '../utils/api';
+=======
+import { Save, Download, FileText, Sparkles } from 'lucide-react';
+import axios from 'axios';
+>>>>>>> e0cd0a3 (Implement Job Fit Resume feature and fix PDF download issue)
 import toast from 'react-hot-toast';
 
 import ResumePreview from '../components/ResumePreview';
@@ -16,7 +21,7 @@ const Editor = () => {
     const resumeId = searchParams.get('id');
     const templateId = searchParams.get('template') || 'simple';
     const previewRef = useRef();
-    const fileInputRef = useRef();
+
     const navigate = useNavigate();
     const { setTitle, setActions } = useNavbar();
     const [isAiModalOpen, setIsAiModalOpen] = useState(false);
@@ -62,20 +67,42 @@ const Editor = () => {
     }, [resumeId]);
 
     const handleJdDataGenerated = (data) => {
-        setResumeData(prev => ({
-            ...prev,
-            personalInfo: {
-                ...prev.personalInfo,
-                summary: data.summary || prev.personalInfo.summary
-            },
-            skills: data.skills && data.skills.length > 0 ? data.skills : prev.skills,
-            projects: data.projects && data.projects.length > 0 ? data.projects.map(proj => ({
-                title: proj.title || '',
-                description: proj.description || '',
-                link: proj.link || '',
-                sourceLink: ''
-            })) : prev.projects
-        }));
+        setResumeData(prev => {
+            const parsedSkills = data.skills && data.skills.length > 0 
+                ? data.skills.map(skill => (typeof skill === 'object' ? skill.name : skill) || '')
+                : prev.skills;
+
+            const parsedProjects = data.projects && data.projects.length > 0
+                ? data.projects.map(proj => ({
+                    title: proj.name || proj.title || '',
+                    description: proj.description || '',
+                    link: proj.link || '',
+                    sourceLink: proj.sourceLink || ''
+                })) : prev.projects;
+
+            const parsedEducation = data.education && data.education.length > 0
+                ? data.education.map(edu => ({
+                    institution: edu.school || edu.institution || '',
+                    degree: edu.degree || '',
+                    year: (edu.startDate || '') + (edu.startDate && edu.endDate ? ' - ' : '') + (edu.endDate || edu.year || '')
+                })) : prev.education;
+
+            const parsedExperience = data.experience && data.experience.length > 0
+                ? data.experience.map(exp => ({
+                    company: exp.company || '',
+                    role: exp.position || exp.role || '',
+                    duration: (exp.startDate || '') + (exp.startDate && exp.endDate ? ' - ' : '') + (exp.endDate || exp.duration || ''),
+                    description: exp.description || ''
+                })) : prev.experience;
+
+            return {
+                personalInfo: { ...prev.personalInfo, ...(data.personalInfo || {}) },
+                education: parsedEducation,
+                experience: parsedExperience,
+                skills: parsedSkills,
+                projects: parsedProjects
+            };
+        });
     };
 
     const handleDownload = async () => {
@@ -109,6 +136,7 @@ const Editor = () => {
             // Find the page container
             const page = clone.querySelector('.resume-page') || clone;
 
+<<<<<<< HEAD
             // Canvas-based oklch resolver: the 2D canvas API accepts all modern CSS
             // color functions and always stores pixels as rgb, making it the only
             // reliable way to convert oklch → rgb independently of browser/version.
@@ -154,9 +182,18 @@ const Editor = () => {
             });
 
             const imgData = canvas.toDataURL('image/jpeg', 0.82);
+=======
+            const imgData = await toPng(page, {
+                pixelRatio: 2,
+                backgroundColor: '#ffffff',
+                width: page.scrollWidth,
+                height: page.scrollHeight
+            });
+
+>>>>>>> e0cd0a3 (Implement Job Fit Resume feature and fix PDF download issue)
             const pdfWidth = 210; // Fixed A4 width in mm
             // Keep a minimum of standard A4 height, but let it grow endlessly if content needs it
-            const pdfHeight = Math.max(297, (canvas.height * pdfWidth) / canvas.width);
+            const pdfHeight = Math.max(297, (page.scrollHeight * pdfWidth) / page.scrollWidth);
 
             // Create a dynamic PDF that fits the entire infinitely scrolling page
             const pdf = new jsPDF({
@@ -212,10 +249,8 @@ const Editor = () => {
         }
     };
 
-    const handleFileUpload = async (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
 
+<<<<<<< HEAD
         if (file.size > 2 * 1024 * 1024) {
             toast.error('File size exceeds 2MB limit.');
             return;
@@ -279,6 +314,8 @@ const Editor = () => {
         };
         reader.readAsDataURL(file);
     };
+=======
+>>>>>>> e0cd0a3 (Implement Job Fit Resume feature and fix PDF download issue)
 
     // Update Navbar Title and Actions
     useEffect(() => {
@@ -291,25 +328,10 @@ const Editor = () => {
                     className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-green-600 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200"
                 >
                     <Sparkles size={16} />
-                    <span className="hidden sm:inline">AI Generate</span>
+                    <span className="hidden sm:inline">Job Fit Resume</span>
                 </button>
                 <div className="h-6 w-px bg-slate-300 mx-1"></div>
-                <input 
-                    type="file" 
-                    ref={fileInputRef} 
-                    hidden 
-                    accept="application/pdf, image/jpeg, image/png, image/jpg" 
-                    onChange={handleFileUpload} 
-                />
-                <button
-                    onClick={() => fileInputRef.current?.click()}
-                    title="Auto-fill with AI"
-                    className="flex items-center gap-2 px-3 py-2 text-sm font-semibold text-green-600 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200"
-                >
-                    <Upload size={16} />
-                    <span className="hidden sm:inline">Upload Resume</span>
-                </button>
-                <div className="h-6 w-px bg-slate-300 mx-1"></div>
+
                 
 
                 <button onClick={handleSave} title="Save Resume" className="p-2 text-slate-500 hover:text-slate-900 rounded-full hover:bg-slate-200">
