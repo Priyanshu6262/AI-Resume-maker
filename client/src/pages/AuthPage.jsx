@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import api from '../utils/api';
 import { useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import { auth, googleProvider, facebookProvider } from '../firebase';
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithPopup, getRedirectResult } from 'firebase/auth';
 
 const AuthPage = () => {
     const { login } = useAuth();
@@ -14,6 +14,31 @@ const AuthPage = () => {
     const [agreedToTerms, setAgreedToTerms] = useState(false);
     const [socialLoading, setSocialLoading] = useState(false);
     const navigate = useNavigate();
+
+    // Handle redirect result (fallback when popup was blocked by browser)
+    useEffect(() => {
+        const handleRedirectResult = async () => {
+            try {
+                const result = await getRedirectResult(auth);
+                if (!result) return; // No pending redirect — normal page load
+                const user = result.user;
+                const { data } = await api.post('/api/auth/social', {
+                    email: user.email,
+                    name: user.displayName,
+                    avatar: user.photoURL,
+                    firebaseUid: user.uid
+                });
+                login(data);
+                toast.success('Social Login Successful');
+                navigate('/templates');
+            } catch (error) {
+                if (error.code) {
+                    console.error('Redirect result error:', error.code, error.message);
+                }
+            }
+        };
+        handleRedirectResult();
+    }, []);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -57,12 +82,24 @@ const AuthPage = () => {
             toast.success('Social Login Successful');
             navigate('/templates');
         } catch (error) {
-            console.error(error);
+            console.error('Social login error:', error.code, error.message);
+            
             if (error.code === 'auth/popup-closed-by-user') return;
-            if (error.code === 'auth/invalid-api-key') {
-                toast.error("Firebase API Key is missing. Check your firebase.js config!");
+            if (error.code === 'auth/cancelled-popup-request') return;
+
+            if (error.code === 'auth/unauthorized-domain') {
+                toast.error(
+                    'This domain is not authorized in Firebase Console. Go to Firebase → Authentication → Settings → Authorized domains and add your Vercel/Render URL.',
+                    { duration: 8000 }
+                );
+            } else if (error.code === 'auth/popup-blocked') {
+                toast.error('Popup was blocked by your browser. Please allow popups for this site.');
+            } else if (error.code === 'auth/invalid-api-key') {
+                toast.error('Firebase API Key is invalid. Check your VITE_* environment variables.');
+            } else if (error.response?.status === 500) {
+                toast.error('Server error during login. Check Render logs and ensure MONGO_URI / JWT_SECRET env vars are set.');
             } else {
-                toast.error('Social Login Failed: ' + error.message);
+                toast.error('Social Login Failed: ' + (error.message || 'Unknown error'));
             }
         } finally {
             setSocialLoading(false);
