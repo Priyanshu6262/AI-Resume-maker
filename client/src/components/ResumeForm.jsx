@@ -148,7 +148,7 @@ const ResumeForm = ({ data, updateData }) => {
                             <input
                                 type="text"
                                 placeholder="John Doe"
-                                value={data.personalInfo.fullName}
+                                value={data.personalInfo.fullName || ''}
                                 onChange={(e) => handleChange('personalInfo', 'fullName', e.target.value)}
                                 className={getInputClass('fullName')}
                             />
@@ -158,7 +158,7 @@ const ResumeForm = ({ data, updateData }) => {
                             <input
                                 type="email"
                                 placeholder="john@example.com"
-                                value={data.personalInfo.email}
+                                value={data.personalInfo.email || ''}
                                 onChange={(e) => handleChange('personalInfo', 'email', e.target.value)}
                                 className={getInputClass('email')}
                             />
@@ -168,7 +168,7 @@ const ResumeForm = ({ data, updateData }) => {
                             <input
                                 type="text"
                                 placeholder="+1 234 567 890"
-                                value={data.personalInfo.phone}
+                                value={data.personalInfo.phone || ''}
                                 onChange={(e) => handleChange('personalInfo', 'phone', e.target.value)}
                                 className={getInputClass('phone')}
                             />
@@ -178,7 +178,7 @@ const ResumeForm = ({ data, updateData }) => {
                             <input
                                 type="text"
                                 placeholder="City, Country"
-                                value={data.personalInfo.address}
+                                value={data.personalInfo.address || ''}
                                 onChange={(e) => handleChange('personalInfo', 'address', e.target.value)}
                                 className={getInputClass('address')}
                             />

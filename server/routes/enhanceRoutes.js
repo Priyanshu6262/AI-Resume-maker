@@ -6,8 +6,8 @@ router.post('/', async (req, res) => {
     try {
         const { text, type } = req.body;
 
-        if (!process.env.GEMINI_API_KEY) {
-            return res.status(500).json({ message: "Gemini API Key is not configured on the server. Please add GEMINI_API_KEY to your .env file." });
+        if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'your_gemini_api_key_here') {
+            return res.status(400).json({ message: "Gemini API Key is not configured on the server. Please add a valid GEMINI_API_KEY to your .env file." });
         }
 
         if (!text) {
@@ -15,7 +15,7 @@ router.post('/', async (req, res) => {
         }
 
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        // Using gemini-2.0-flash model
+        // Using gemini-2.5-flash model
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         let prompt = "";
@@ -42,7 +42,16 @@ router.post('/', async (req, res) => {
     } catch (error) {
         console.error("AI Enhancement Error:", error);
         console.error("Error details:", error?.response?.data || error?.message);
-        res.status(500).json({ message: error?.message || "Failed to enhance text with AI." });
+        
+        let errorMessage = error?.message || "Failed to enhance text with AI.";
+        if (errorMessage.includes("API_KEY_INVALID") || errorMessage.includes("API Key not found")) {
+            errorMessage = "Invalid Gemini API Key. Please check your .env file configuration.";
+            return res.status(400).json({ message: errorMessage });
+        } else if (errorMessage.includes("503") || errorMessage.includes("high demand") || errorMessage.includes("Service Unavailable")) {
+            errorMessage = "Google Gemini API is currently experiencing high demand. Please try again later.";
+            return res.status(503).json({ message: errorMessage });
+        }
+        res.status(500).json({ message: errorMessage });
     }
 });
 
@@ -52,8 +61,8 @@ router.post('/generate-job-fit', async (req, res) => {
     try {
         const { jobDescription, fileData, mimeType } = req.body;
 
-        if (!process.env.GEMINI_API_KEY) {
-            return res.status(500).json({ message: "Gemini API Key is not configured." });
+        if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'your_gemini_api_key_here') {
+            return res.status(400).json({ message: "Gemini API Key is not configured on the server. Please add a valid GEMINI_API_KEY to your .env file." });
         }
 
         if (!jobDescription || !fileData) {
@@ -140,7 +149,16 @@ Do not include any markdown formatting like \`\`\`json. Return raw JSON only.`;
 
     } catch (error) {
         console.error("AI Generation from JD Error:", error?.message || error);
-        res.status(500).json({ message: error?.message || "Failed to generate AI content from Job Description." });
+        
+        let errorMessage = error?.message || "Failed to generate AI content from Job Description.";
+        if (errorMessage.includes("API_KEY_INVALID") || errorMessage.includes("API Key not found")) {
+            errorMessage = "Invalid Gemini API Key. Please check your .env file configuration.";
+            return res.status(400).json({ message: errorMessage });
+        } else if (errorMessage.includes("503") || errorMessage.includes("high demand") || errorMessage.includes("Service Unavailable")) {
+            errorMessage = "Google Gemini API is currently experiencing high demand. Please try again later.";
+            return res.status(503).json({ message: errorMessage });
+        }
+        res.status(500).json({ message: errorMessage });
     }
 });
 
