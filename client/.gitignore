@@ -16,7 +16,7 @@ dist-ssr
 .env
 .env.*
 .env.development
-.env.production
+# .env.production is intentionally tracked (contains only public API URL)
 
 
 # Editor directories and files
