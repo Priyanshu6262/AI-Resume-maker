@@ -8,12 +8,15 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Allowed origins — add any new frontend URLs here
+// Allowed origins — supports comma-separated FRONTEND_URLS env var
 const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:3000',
-    process.env.FRONTEND_URL, // Set this in Render env vars
-].filter(Boolean); // Remove undefined/empty entries
+    'https://ai-resume-maker-beta-beryl.vercel.app', // Vercel deployment
+    // Also support any extra URLs set in Render env vars (comma-separated)
+    ...(process.env.FRONTEND_URLS ? process.env.FRONTEND_URLS.split(',').map(u => u.trim()) : []),
+    process.env.FRONTEND_URL,
+].filter(Boolean);
 
 app.use(cors({
     origin: (origin, callback) => {
