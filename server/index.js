@@ -39,7 +39,6 @@ app.get('/', (req, res) => {
     res.send('Resume Maker API is running');
 });
 
-app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/resumes', require('./routes/resumeRoutes'));
 app.use('/api/enhance', require('./routes/enhanceRoutes'));
 

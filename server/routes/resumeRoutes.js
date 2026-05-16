@@ -1,34 +1,16 @@
 const express = require('express');
 const Resume = require('../models/Resume');
-const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 
-// Middleware to protect routes
-const protect = (req, res, next) => {
-    let token;
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        try {
-            token = req.headers.authorization.split(' ')[1];
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            req.user = decoded;
-            next();
-        } catch (error) {
-            res.status(401).json({ message: 'Not authorized, token failed' });
-        }
-    } else {
-        res.status(401).json({ message: 'Not authorized, no token' });
-    }
-};
-
 // Create or Update Resume
-router.post('/', protect, async (req, res) => {
+router.post('/', async (req, res) => {
     const { _id, templateId, personalInfo, education, experience, skills, projects } = req.body;
 
     try {
         let resume = null;
         if (_id) {
-            resume = await Resume.findOne({ _id, userId: req.user.id });
+            resume = await Resume.findById(_id);
         }
 
         if (resume) {
@@ -42,7 +24,6 @@ router.post('/', protect, async (req, res) => {
         } else {
             // Create new
             resume = new Resume({
-                userId: req.user.id,
                 templateId,
                 personalInfo,
                 education,
@@ -60,10 +41,10 @@ router.post('/', protect, async (req, res) => {
     }
 });
 
-// Get ALL User Resumes
-router.get('/', protect, async (req, res) => {
+// Get ALL Resumes
+router.get('/', async (req, res) => {
     try {
-        const resumes = await Resume.find({ userId: req.user.id }).sort({ updatedAt: -1 });
+        const resumes = await Resume.find().sort({ updatedAt: -1 });
         res.json(resumes);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
@@ -71,9 +52,9 @@ router.get('/', protect, async (req, res) => {
 });
 
 // Get specific Resume
-router.get('/:id', protect, async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
-        const resume = await Resume.findOne({ _id: req.params.id, userId: req.user.id });
+        const resume = await Resume.findById(req.params.id);
         if (resume) {
             res.json(resume);
         } else {
@@ -85,9 +66,9 @@ router.get('/:id', protect, async (req, res) => {
 });
 
 // Delete Resume
-router.delete('/:id', protect, async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
-        const resume = await Resume.findOneAndDelete({ _id: req.params.id, userId: req.user.id });
+        const resume = await Resume.findByIdAndDelete(req.params.id);
         if (resume) {
             res.json({ message: 'Resume deleted successfully' });
         } else {

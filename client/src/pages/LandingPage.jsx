@@ -1,10 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Play, CheckCircle, Key, ShieldCheck, Download, Star, Check } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
 
 const LandingPage = () => {
-    const { user } = useAuth();
-
     return (
         <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-green-200">
 
@@ -38,7 +35,7 @@ const LandingPage = () => {
 
                     <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
                         <Link 
-                            to={user ? "/templates" : "/login"} 
+                            to="/templates" 
                             className="w-full sm:w-auto px-8 py-3.5 bg-green-600 hover:bg-green-700 text-white rounded-full font-semibold flex items-center justify-center gap-2"
                         >
                             Get started 

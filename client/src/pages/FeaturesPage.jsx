@@ -76,9 +76,9 @@ const FeaturesPage = () => {
                             <div className="w-14 h-14 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                                 <Cloud size={28} />
                             </div>
-                            <h3 className="text-xl font-bold text-slate-900 mb-3">Cloud Saves & Wishlist</h3>
+                            <h3 className="text-xl font-bold text-slate-900 mb-3">Cloud Saves</h3>
                             <p className="text-slate-600 leading-relaxed">
-                                Securely save your drafts to the cloud so you can edit anywhere. Add your favorite templates to a wishlist for quick access later.
+                                Securely save your resume drafts to the cloud so you can pick up right where you left off — from any device, at any time.
                             </p>
                         </div>
 

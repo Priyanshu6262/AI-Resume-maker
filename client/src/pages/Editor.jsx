@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { toPng } from 'html-to-image';
 import jsPDF from 'jspdf';
-import { Save, Download, FileText, Sparkles } from 'lucide-react';
+import { Download, FileText, Sparkles } from 'lucide-react';
 import api from '../utils/api';
 import toast from 'react-hot-toast';
 
@@ -34,9 +34,6 @@ const Editor = () => {
         if (resumeId) {
             const fetchResume = async () => {
                 try {
-                    const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-                    if (!userInfo || !userInfo.token) return;
-
                     const { data } = await api.get(`/api/resumes/${resumeId}`);
                     
                     if (data) {
@@ -214,11 +211,6 @@ const Editor = () => {
                 </button>
                 <div className="h-6 w-px bg-slate-300 mx-1"></div>
 
-                
-
-                <button onClick={handleSave} title="Save Resume" className="p-2 text-slate-500 hover:text-slate-900 rounded-full hover:bg-slate-200">
-                    <Save size={20} />
-                </button>
                 <button onClick={handleDownload} title="Download PDF" className="p-2 text-slate-500 hover:text-slate-900 rounded-full hover:bg-slate-200">
                     <Download size={20} />
                 </button>
